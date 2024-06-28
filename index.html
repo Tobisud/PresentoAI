@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>pptx2mp4</title>
+    <link rel="icon" href="icon.png" type="image/png">
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+        #header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            height: 100vh; /* Full viewport height */
+            background-color: #f4f4f4; /* Light background color */
+        }
+        #header img {
+            max-width: 400px; /* Adjust as needed */
+            margin-top: 20px; /* Space from the top */
+            margin-bottom: 20px; /* Space between image and heading */
+        }
+        #header h1 {
+            margin: 0;
+            font-size: 2.5em; /* Adjust as needed */
+        }
+        .main-menu {
+            list-style: none;
+            padding: 0;
+            margin: 20px 0; /* Space above and below the menu */
+            display: flex;
+            justify-content: center;
+        }
+        .main-menu li {
+            margin: 0 15px; /* Space between menu items */
+        }
+        .main-menu a {
+            text-decoration: none;
+            color: #333;
+            font-size: 1.2em; /* Adjust as needed */
+        }
+        .main-menu a:hover {
+            color: #007BFF; /* Change color on hover */
+        }
+        #upload-box {
+            margin: 20px;
+            padding: 20px;
+            border: 2px dashed #ccc;
+            border-radius: 10px;
+            background-color: #fff;
+            text-align: center;
+        }
+        #upload-box input[type="file"] {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <header id="header">
+        <img src="icon.png" alt="Logo">
+        <h1>Slide2Video</h1>
+        <ul class="main-menu">
+            <li><a href="#home">home</a></li>
+            <li><a href="#about">about</a></li>
+            <li><a href="#contact">contact</a></li>
+        </ul>
+        <div id="upload-box">
+            <h2>Upload your PPTX file</h2>
+            <form action="/upload" method="post" enctype="multipart/form-data">
+                <input type="file" name="file" accept=".pptx">
+                <br><br>
+            </form>
+        </div>
+        <button type="submit">Upload</button>
+    </header>
+</body>
+</html>
