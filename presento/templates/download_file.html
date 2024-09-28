@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>pptx2mp4</title>
+    {% load static %}
+    <link rel="icon" href="{% static 'icon.png' %}">
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+        #header {
+            /* Remove the height: 100vh property */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+        }
+        #header img {
+            max-width: 400px; /* Adjust as needed */
+            margin-top: 20px; /* Space from the top */
+            margin-bottom: 20px; /* Space between image and heading */
+        }
+        #header h1 {
+            margin: 0;
+            font-size: 2.5em; /* Adjust as needed */
+        }
+        .main-menu {
+            list-style: none;
+            padding: 0;
+            margin: 20px 0; /* Space above and below the menu */
+            display: flex;
+            justify-content: center;
+        }
+        .main-menu li {
+            margin: 0 15px; /* Space between menu items */
+        }
+        .main-menu a {
+            text-decoration: none;
+            color: #333;
+            font-size: 1.2em; /* Adjust as needed */
+        }
+        .main-menu a:hover {
+            color: #007BFF; /* Change color on hover */
+        }
+        #download-box {
+            margin: 0 auto; /* Center the box horizontally */
+            padding: 20px;
+            border: 2px dashed #ccc;
+            border-radius: 10px;
+            background-color: #fff;
+            text-align: center;
+            width: 300px;
+            height: 150px;
+        }
+        #download-box h2 {
+            position: relative; /* Add this line */
+            top: 0px; /* Adjust the top margin */
+            left: 50%; /* Center horizontally */
+            transform: translateX(-50%); /* Center horizontally */
+        }
+
+        #download-button {
+            padding: 10px 15px; /* Bigger padding for a larger button */
+            font-size: 16px; /* Bigger font size for the button text */
+            cursor: pointer;
+            background-color: #4CAF50; /* Button background color */
+            color: white; /* Button text color */
+            border: none;
+            border-radius: 5px; /* Rounded corners */
+            position: relative; /* Change from absolute to relative */
+            display: block; /* Add this line to make the button a block element */
+            margin: 20px auto; /* Add this line to center the button horizontally */
+        }
+    </style>
+</head>
+<body>
+    <header id="header">
+        <img src="{% static 'icon.png' %}" alt="Logo">
+        <h1>Slide2Video</h1>
+        <ul class="main-menu">
+            <li><a href="{% url 'home' %}">home</a></li>
+            <li><a href="#about">about</a></li>
+            <li><a href="#contact">contact</a></li>
+        </ul>
+        <div id="download-box">
+            <h2>Download Your Video</h2>
+            {% for mp4_file_url in mp4_file_urls %}
+                <button id="download-button" data-url="{{ mp4_file_url }}" download>Download</buttom>
+            {% endfor %}
+        </div>
+    </header>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+        document.body.addEventListener("click", function(event) {
+            if (event.target.matches('#download-button')) {
+                const mp4FileUrl = event.target.getAttribute('data-url');
+
+                // Create an anchor element and set the href attribute to the MP4 file URL
+                const a = document.createElement('a');
+                a.href = mp4FileUrl;
+                a.download = mp4FileUrl.substring(mp4FileUrl.lastIndexOf('/') + 1);
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a); // Clean up: Remove the anchor element after download is triggered
+            }
+        });
+    });
+    </script>
+</body>
+</html>

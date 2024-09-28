@@ -1,0 +1,22 @@
+[
+    {
+        "model": "presento.Presento",
+        "pk": 1,
+        "fields": {
+            "title": "Quarterly Business Review",
+            "pptx_file": "presentations/QBR.pptx",
+            "process_id:": "123456",
+            "uploaded_at": "2024-07-01T10:00:00Z"
+        }
+    },
+    {
+        "model": "presento.Presento",
+        "pk": 2,
+        "fields": {
+            "title": "Annual Financial Report",
+            "pptx_file": "presentations/Annual_Financial_Report.pptx",
+            "process_id:": "234567",
+            "uploaded_at": "2024-06-15T15:30:00Z"
+        }
+    }
+]
