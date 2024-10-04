@@ -1,115 +1,137 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>pptx2mp4</title>
-    {% load static %}
-    <link rel="icon" href="{% static 'icon.png' %}">
-    <style>
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-        }
-        #header {
-            /* Remove the height: 100vh property */
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-            height: 100vh;
-            background-color: #f4f4f4;
-        }
-        #header img {
-            max-width: 400px; /* Adjust as needed */
-            margin-top: 20px; /* Space from the top */
-            margin-bottom: 20px; /* Space between image and heading */
-        }
-        #header h1 {
-            margin: 0;
-            font-size: 2.5em; /* Adjust as needed */
-        }
-        .main-menu {
-            list-style: none;
-            padding: 0;
-            margin: 20px 0; /* Space above and below the menu */
-            display: flex;
-            justify-content: center;
-        }
-        .main-menu li {
-            margin: 0 15px; /* Space between menu items */
-        }
-        .main-menu a {
-            text-decoration: none;
-            color: #333;
-            font-size: 1.2em; /* Adjust as needed */
-        }
-        .main-menu a:hover {
-            color: #007BFF; /* Change color on hover */
-        }
-        #download-box {
-            margin: 0 auto; /* Center the box horizontally */
-            padding: 20px;
-            border: 2px dashed #ccc;
-            border-radius: 10px;
-            background-color: #fff;
-            text-align: center;
-            width: 300px;
-            height: 150px;
-        }
-        #download-box h2 {
-            position: relative; /* Add this line */
-            top: 0px; /* Adjust the top margin */
-            left: 50%; /* Center horizontally */
-            transform: translateX(-50%); /* Center horizontally */
-        }
 
-        #download-button {
-            padding: 10px 15px; /* Bigger padding for a larger button */
-            font-size: 16px; /* Bigger font size for the button text */
-            cursor: pointer;
-            background-color: #4CAF50; /* Button background color */
-            color: white; /* Button text color */
-            border: none;
-            border-radius: 5px; /* Rounded corners */
-            position: relative; /* Change from absolute to relative */
-            display: block; /* Add this line to make the button a block element */
-            margin: 20px auto; /* Add this line to center the button horizontally */
-        }
-    </style>
+<head>{% load static %}
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="An free convertor that convert pptx file into mp4 using slides and speaker notes.">
+  <meta name="keywords" content="PPTX, MP4, presento, presentation, video, convertor">
+  <meta name="author" content="Thanh Lu & Dominic Dabish">
+  <title>PresentoAI</title>
+  <!-- google fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Manrope:wght@400;500;700&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="shortcut icon" href="{% static 'assets/img/short-cut.png' %}">
+	<link rel="stylesheet" type="text/css" href="{% static 'assets/fonts/unicons/unicons.css' %}">
+  <link rel="stylesheet" href="{% static 'assets/css/plugins.css' %}">
+  <link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
+  <link rel="stylesheet" href="{% static 'assets/css/colors/sky.css' %}">
+  <link rel="preload" href="{% static 'assets/css/fonts/urbanist.css' %}" as="style" onload="this.rel='stylesheet'">
+  <style>
+    .swiper-container.nav-color .swiper-button.swiper-button-disabled, .swiper-container.nav-color .swiper-slide figure .item-link.swiper-button-disabled {
+    background: #5eb9f0b3 !important;
+}
+    .swiper-container.nav-color .swiper-button, .swiper-container.nav-color .swiper-slide figure .item-link {
+    background: #5eb9f0e6 !important;
+    color: #ffffff !important;
+}
+    .swiper-container.nav-color .swiper-button:hover, .swiper-container.nav-color .swiper-slide figure .item-link:hover {
+    background: #5eb9f0 !important;
+}
+        .navbar.navbar-light.fixed .btn:not(.btn-expand):not(.btn-gradient) {
+    background: #5eb9f0 !important;
+    border-color: #5eb9f0 !important;
+    color: #ffffff !important;
+}
+    .accordion-wrapper .card-header button{
+      color: #5eb9f0;
+    }
+      @media (min-width: 992px){
+      .navbar-expand-lg.navbar-light .dropdown:not(.dropdown-submenu)>.dropdown-toggle:after {
+          color: #5eb9f0;
+      }
+      }
+      @media (max-width: 991.98px){
+      .navbar-expand-lg .navbar-collapse .dropdown-toggle:after {
+        color: #ffffff !important;
+      }
+  }
+  </style>
 </head>
-<body>
-    <header id="header">
-        <img src="{% static 'icon.png' %}" alt="Logo">
-        <h1>Slide2Video</h1>
-        <ul class="main-menu">
-            <li><a href="{% url 'home' %}">home</a></li>
-            <li><a href="#about">about</a></li>
-            <li><a href="#contact">contact</a></li>
-        </ul>
-        <div id="download-box">
-            <h2>Download Your Video</h2>
-            {% for mp4_file_url in mp4_file_urls %}
-                <button id="download-button" data-url="{{ mp4_file_url }}" download>Download</buttom>
-            {% endfor %}
-        </div>
-    </header>
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-        document.body.addEventListener("click", function(event) {
-            if (event.target.matches('#download-button')) {
-                const mp4FileUrl = event.target.getAttribute('data-url');
 
-                // Create an anchor element and set the href attribute to the MP4 file URL
-                const a = document.createElement('a');
-                a.href = mp4FileUrl;
-                a.download = mp4FileUrl.substring(mp4FileUrl.lastIndexOf('/') + 1);
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a); // Clean up: Remove the anchor element after download is triggered
-            }
-        });
+<body>
+  <div class="grow shrink-0">
+    <header class="relative wrapper !bg-[#ffffff]">
+      <nav class="navbar navbar-expand-lg classic transparent navbar-light">
+        <div class="container xl:flex-row lg:flex-row !flex-nowrap items-center">
+          <div class="navbar-brand w-full">
+            <a href="{% url 'home' %}">
+              <img src="{% static  'assets/img/Presento-logo.png' %}" style="width: 450px; height: auto;">
+            </a>
+          </div>
+          <div class="navbar-collapse offcanvas offcanvas-nav offcanvas-start">
+            <div class="offcanvas-header xl:hidden lg:hidden flex items-center justify-between flex-row p-6">
+              <button type="button" class="btn-close btn-close-white mr-[-0.75rem] m-0 p-0 leading-none text-[#343f52] transition-all duration-[0.2s] ease-in-out border-0 motion-reduce:transition-none before:text-[1.05rem] before:content-['\ed3b'] before:w-[1.8rem] before:h-[1.8rem] before:leading-[1.8rem] before:shadow-none before:transition-[background] before:duration-[0.2s] before:ease-in-out before:flex before:justify-center before:items-center before:m-0 before:p-0 before:rounded-[100%] hover:no-underline bg-inherit before:bg-[rgba(255,255,255,.08)] before:font-Unicons hover:before:bg-[rgba(0,0,0,.11)] focus:outline-0" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            </div>
+            <div class="offcanvas-body xl:!ml-auto lg:!ml-auto flex flex-col !h-full mb-0">
+                <ul class="navbar-nav flex flex-col">
+                  <li class="nav-item mb-2">
+                    <a class="nav-link font-bold tracking-[-0.01rem] hover:!text-[#54a8c7] after:!text-[#54a8c7]" href="./index.html">Home</a>
+                  </li>
+                  <li class="nav-item mb-2">
+                    <a class="nav-link font-bold tracking-[-0.01rem] hover:!text-[#54a8c7] after:!text-[#54a8c7]" href="./about.html">About</a>
+                  </li>
+                  <li class="nav-item mb-2"></li>
+                    <a class="nav-link font-bold tracking-[-0.01rem] hover:!text-[#54a8c7] after:!text-[#54a8c7]" href="./news.html">What's new</a>
+                  </li>
+                </ul>
+            </div>
+            <div class="navbar-other xl:!ml-auto lg:!ml-auto flex flex-col !h-full mb-0">
+              <ul class="navbar-nav flex-row items-center ml-auto">
+                <li class="nav-item hidden xl:block lg:block md:block">
+                  <a href="./contact.html" class="btn btn-sm btn-sky text-white !bg-[#5eb9f0] border-[#5eb9f0] hover:text-white hover:!bg-[#5eb9f0] hover:border-[#5eb9f0] focus:shadow-[rgba(88,167,216,1)] active:text-white active:!bg-[#5eb9f0] active:border-[#5eb9f0] disabled:text-white disabled:!bg-[#5eb9f0] disabled:border-[#5eb9f0]  !rounded-[50rem]">Contact</a>
+                </li>   
+              </ul>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+  </div>
+    <section class="wrapper !bg-[#ffffff]">
+      <div class="container pt-10 xl:pt-[4.5rem] lg:pt-[4.5rem] md:pt-[4.5rem] pb-[4.5rem] xl:pb-24 lg:pb-24 md:pb-24 !text-center">
+        <div class="flex flex-wrap justify-center items-center mx-[-15px] xl:mx-[-35px] lg:mx-[-20px] mt-[-50px] xl:mt-0 !mb-[4.5rem]">
+          <!-- Image -->
+          <div class="xl:w-7/12 lg:w-7/12 w-full flex-[0_0_auto] px-[15px] xl:px-[35px] lg:px-[20px] mt-[50px] xl:mt-0 max-w-full xl:!order-2 lg:!order-2">
+            <figure class="m-0 p-0">
+              <img class="img-auto" src="{% static 'assets/img/illustrations/presento-done.png' %}" srcset="{% static 'assets/img/illustrations/presento-done@2x.png' 2x %}" alt="image">
+            </figure>
+          </div>
+          
+          <!-- Text and button -->
+          <div class="md:w-10/12 lg:w-5/12 xl:w-5/12 w-full flex-[0_0_auto] px-[15px] xl:px-[35px] lg:px-[20px] mt-[50px] xl:mt-0 max-w-full text-center flex flex-col justify-center items-center">
+            <h1 class="lg:text-[2.0rem] text-[calc(1rem_+_1.2vw)] !leading-[1.15] mb-5">
+              <p>All done! Download Your Video</p>
+            </h1>
+            
+            {% for mp4_file_url in mp4_file_urls %}
+            <button id="download-button" type="download" class="btn btn-sky text-white !bg-[#73ca73] border-[#73ca73] hover:text-[#73ca73] hover:!bg-white hover:border-[#73ca73] focus:shadow-[rgba(88,167,216,1)] active:text-[#73ca73] active:!bg-[#73ca73] active:border-[#73ca73] disabled:text-white disabled:!bg-[#73ca73] disabled:border-[#73ca73] !rounded-[50rem] mt-4" data-url="{{ mp4_file_url }}" download>
+              Download
+            </button>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+      
+      <!-- /.container -->
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+    document.body.addEventListener("click", function(event) {
+        if (event.target.matches('#download-button')) {
+            const mp4FileUrl = event.target.getAttribute('data-url');
+
+            // Create an anchor element and set the href attribute to the MP4 file URL
+            const a = document.createElement('a');
+            a.href = mp4FileUrl;
+            a.download = mp4FileUrl.substring(mp4FileUrl.lastIndexOf('/') + 1);
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a); // Clean up: Remove the anchor element after download is triggered
+        }
     });
-    </script>
+});
+</script>
 </body>
+
 </html>

@@ -1,0 +1,18 @@
+<!-- presentation_list.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Files</title>
+</head>
+<body>
+    <h1>Files</h1>
+    <ul>
+        {% for data in file %}
+            <li>
+                {{ data.title }}
+                <!--<a href="{% url 'download_presentation' presentation.pk %}">{{ data.title }}</a>-->
+            </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

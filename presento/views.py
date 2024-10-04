@@ -43,20 +43,6 @@ def upload_file(request):
     else:
         return render(request, 'upload_file.html')
 
-# def run_python_script(request, process_id):
-#     # Construct the command to run the script
-#     script_path = os.path.join(settings.BASE_DIR, 'scripts','tts_v2.py')
-#     command = f"python {script_path} {process_id}"
-    
-#     try:
-#         result = subprocess.run(command, shell=True, check=True, capture_output=True, text=True)
-#         return JsonResponse({'status': 'success', 'output': result.stdout})
-#     except subprocess.CalledProcessError as e:
-#         return JsonResponse({'status': 'error', 'output': e.stderr})
-# def run_python_script_async(process_id):
-#     thread = threading.Thread(target=run_python_script, args=(process_id,))
-#     thread.start()
-
 def run_python_script(request, process_id):
     # Construct the path to the script
     os.environ["LANG"] = "en_US.UTF-8"
@@ -138,5 +124,5 @@ def download_file(request, pk):
     return render(request, 'download_file.html', {'presentation': presentation, 'mp4_file_urls': mp4_file_urls})
 
 def home(request):
-    file = Presento.objects.all()  # Fetch all presentations
-    return render(request, 'home.html', {'presentations': file})
+    #file = Presento.objects.all()  # Fetch all presentations
+    return render(request, 'home.html')#, {'presentations': file})

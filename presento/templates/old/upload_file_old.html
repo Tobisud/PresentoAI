@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload PPTX File</title>
+    {% load static %}
+    <link rel="icon" href="{% static 'icon.png' %}">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        #header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+        }
+        #header img {
+            max-width: 400px;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+        #header h1 {
+            margin: 0;
+            font-size: 2.5em;
+        }
+        #process-id {
+            margin: 20px 0;
+            font-size: 1.2em;
+            color: #333;
+        }
+        #loading {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 20px 0;
+        }
+        .loader {
+            border: 16px solid #f3f3f3;
+            border-radius: 50%;
+            border-top: 16px solid #3498db;
+            width: 120px;
+            height: 120px;
+            animation: spin 2s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <header id="header">
+        <img src="{% static 'icon.png' %}" alt="Logo">
+        <h1>Slide2Video</h1>
+        <div id="process-id">
+            <p>Processing ID: <span id="process-id-value">{{ process_id }}</span></p>
+        </div>
+        <div id="loading">
+            <div class="loader"></div>
+            <p>Processing your file, please wait...</p>
+        </div>
+    </header>
+
+    <script>
+        function checkStatus() {
+            const processId = "{{ process_id }}";
+            fetch(`/check_status/${processId}/`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'completed') {
+                        window.location.href = `/presento/${data.presentation_id}/download/`;
+                    } else if (data.status === 'pending') {
+                        // Optionally update the user or show a spinner
+                        setTimeout(checkStatus, 5000); // Check again in 5 seconds
+                    } else {
+                        // Handle other statuses or errors
+                        console.error('Unexpected status:', data.status);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    // Optionally show an error message to the user
+                });
+        }
+
+        // Start checking the status
+        checkStatus();
+    </script>
+</body>
+</html>
+</body>
+</html>
