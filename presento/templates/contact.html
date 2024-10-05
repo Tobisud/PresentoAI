@@ -37,58 +37,16 @@
     .accordion-wrapper .card-header button{
       color: #5eb9f0;
     }
-    /* Flexbox Example */
-.form-container {
-  display: flex;
-  flex-direction: column; /* Stack elements vertically */
-  align-items: center;
-}
-
-/* Grid Example */
-.form-container {
-  display: grid;
-  grid-template-columns: 1fr; /* Create one equal-width column */
-  gap: 20px;
-}
-      /* Styles for screens smaller than 768px (tablets and below) */
-@media (max-width: 768px) {
-  .form-container {
-    width: 90%; /* Make the form container take up 90% of the screen width */
-    padding: 20px; 
+      @media (min-width: 992px){
+      .navbar-expand-lg.navbar-light .dropdown:not(.dropdown-submenu)>.dropdown-toggle:after {
+          color: #5eb9f0;
+      }
+      }
+      @media (max-width: 991.98px){
+      .navbar-expand-lg .navbar-collapse .dropdown-toggle:after {
+        color: #ffffff !important;
+      }
   }
-
-  .form-input {
-    font-size: 16px;
-  }
-}
-
-/* Styles for larger screens (desktops) */
-@media (min-width: 768px) {
-  .form-container {
-    width: 60%; /* Wider form container on larger screens */
-    padding: 30px;
-  }
-
-  .form-input {
-    font-size: 18px; 
-  }
-}
-.flex {
-    display: flex;
-    width: 100%
-}
-.justify-center {
-    justify-content: center;
-}
-
-.items-center {
-    align-items: center; /* Aligns items vertically */
-}
-
-.img-auto {
-    max-width: 100%; /* Ensures the image scales down within its container */
-    height: auto;    /* Maintains the aspect ratio */
-}
   </style>
 </head>
 
@@ -123,8 +81,7 @@
               <ul class="navbar-nav flex-row items-center ml-auto">
                 <li class="nav-item hidden xl:block lg:block md:block">
                   <a href="{% url 'contact' %}" class="btn btn-sm btn-sky text-white !bg-[#5eb9f0] border-[#5eb9f0] hover:text-white hover:!bg-[#5eb9f0] hover:border-[#5eb9f0] focus:shadow-[rgba(88,167,216,1)] active:text-white active:!bg-[#5eb9f0] active:border-[#5eb9f0] disabled:text-white disabled:!bg-[#5eb9f0] disabled:border-[#5eb9f0]  !rounded-[50rem]">Contact</a>
-                </li>
-                
+                </li>   
               </ul>
             </div>
           </div>
@@ -134,32 +91,56 @@
   </div>
     <section class="wrapper !bg-[#ffffff]">
       <div class="container pt-10 xl:pt-[4.5rem] lg:pt-[4.5rem] md:pt-[4.5rem] pb-[4.5rem] xl:pb-24 lg:pb-24 md:pb-24 !text-center">
-        <div class="flex flex-wrap items-center mx-[-15px] xl:mx-[-35px] lg:mx-[-20px] mt-[-50px] xl:mt-0 !mb-[4.5rem]">
-          <!-- Image Section -->
-          <div class="flex justify-center items-center mt-10">
+        <div class="flex flex-wrap justify-center items-center mx-[-15px] xl:mx-[-35px] lg:mx-[-20px] mt-[-50px] xl:mt-0 !mb-[4.5rem]">
+          <!-- Image -->
+          <div class="xl:w-7/12 lg:w-7/12 w-full flex-[0_0_auto] px-[15px] xl:px-[35px] lg:px-[20px] mt-[50px] xl:mt-0 max-w-full xl:!order-2 lg:!order-2">
             <figure class="m-0 p-0">
-                <img class="img-auto" src="{% static 'assets/img/illustrations/presento-about.png' %}" srcset="{% static 'assets/img/illustrations/presento-about@2x.png' 2x %}" alt="image">
+              <img class="img-auto" src="{% static 'assets/img/illustrations/presento-done.png' %}" srcset="{% static 'assets/img/illustrations/presento-done@2x.png' 2x %}" alt="image">
             </figure>
-        </div>
-        
-          <!-- Announcement Board -->
-          <div class="announcement-board md:w-5/12 lg:w-5/12 w-full flex-[0_0_auto] px-[15px] xl:px-[35px] lg:px-[20px] mt-5 xl:mt-0">
-              <h1 class="announcement-title xl:text-[2.7rem] text-[calc(1.395rem_+_1.74vw)] !leading-[1.15] mb-5">
-                Story
-              </h1>
-              <p class="text-lg">My name is Thanh. I'm an senior at SDSU majoring in Computer Science. I was looking for a side project for summer, while prof. Dabish give the idea of text to speech. We worked the whole summer to find out different approaches and python libraries to archieve this project. Here we are today.</p>
-              <h2 class="announcement-title xl:text-[2.7rem] text-[calc(1.395rem_+_1.74vw)] !leading-[1.15] mb-5">
-                Project: PresentoAI
-            </h2>
-              <p class="text-lg">The project is about converting a PowerPoint file into video. As the demand for online courses increases and becomes more popular after the Covid pandemic, we believe that a tool to help convert presentations into videos is a necessity and a quick solution for many people. Understanding that market, we quickly created this conversion tool to help people save time recording audio and video.<br>
-                Because it is the first version, there may be many bugs, please send us feedback about the problems you encounter. We will fix and update newer versions as soon as possible.</p>
           </div>
+          
+          <div class="md:w-10/12 lg:w-5/12 xl:w-5/12 w-full flex-[0_0_auto] px-[15px] xl:px-[35px] lg:px-[20px] mt-[50px] xl:mt-0 max-w-full text-center flex flex-col justify-center items-center">
+            <h1 class="lg:text-[2.0rem] text-[calc(1rem_+_1.2vw)] !leading-[1.15] mb-5">
+                <p>We value your feedback!</p>
+            </h1>
+            
+            <textarea id="feedback-textbox" class="border rounded-lg p-2 w-full h-32 mt-4" placeholder="Enter your feedback here..."></textarea>
+            
+            <button id="send-button" type="button" class="btn btn-sky text-white !bg-[#73ca73] border-[#73ca73] hover:text-[#73ca73] hover:!bg-white hover:border-[#73ca73] focus:shadow-[rgba(88,167,216,1)] active:text-[#73ca73] active:!bg-[#73ca73] active:border-[#73ca73] disabled:text-white disabled:!bg-[#73ca73] disabled:border-[#73ca73] !rounded-[50rem] mt-4">
+                Send Feedback
+            </button>
+        </div>
       </div>
-      </div>
+      
       <!-- /.container -->
-
-  <script src="{% static 'assets/js/plugins.js' %}"></script>
-  <script src="{% static 'assets/js/theme.js' %}"></script>
+      <script src="https://cdn.emailjs.com/dist/email.min.js"></script>
+      <script>
+          (function() {
+              emailjs.init("8N9oyNopqR5LSJSXT"); // Replace with your EmailJS user ID
+          })();
+      
+          document.getElementById('send-button').addEventListener('click', function() {
+              const feedback = document.getElementById('feedback-textbox').value;
+      
+              if (feedback.trim() === '') {
+                  alert('Please enter your feedback before sending.');
+                  return;
+              }
+      
+              const templateParams = {
+                  feedback: feedback
+              };
+      
+              emailjs.send('service_6jnc0vt', 'template_hoa8ndv', templateParams)
+              .then(function(response) {
+                  alert('Thank you for your feedback!');
+                  document.getElementById('feedback-textbox').value = ''; // Clear the textbox
+              }, function(error) {
+                  console.error('Error:', error);
+                  alert('There was an error submitting your feedback. Please try again.');
+              });
+          });
+      </script>
 </body>
 
 </html>
