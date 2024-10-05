@@ -22,7 +22,11 @@ from django.conf.urls.static import static
 
 
 urlpatterns = [
+    # path('list-static/', views.list_static_files, name='list-static'),
     path('', views.home, name='home'),
+    path('about/', views.about, name='about'),
+    path('news/', views.news, name='news'),
+    path('contact/', views.contact, name='contact'),
     path('upload/', views.upload_file, name='upload_file'),
     path('run_script/<str:process_id>/', views.run_python_script, name='run_python_script'),
     path('check_status/<str:process_id>/', views.check_status, name='check_status'),

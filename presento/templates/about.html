@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
-{% load static %}
-<head>
+
+<head>{% load static %}
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="An free convertor that convert pptx file into mp4 using slides and speaker notes.">
@@ -83,6 +83,25 @@
   .upload-box:hover {
       background-color: #e0e0e0; /* Darker grey on hover */
   }
+.announcement-board {
+    margin-left: auto;
+}
+
+.flex {
+    display: flex;
+}
+.justify-center {
+    justify-content: center;
+}
+
+.items-center {
+    align-items: center; /* Aligns items vertically */
+}
+
+.img-auto {
+    max-width: 100%; /* Ensures the image scales down within its container */
+    height: auto;    /* Maintains the aspect ratio */
+}
   </style>
 </head>
 
@@ -128,39 +147,26 @@
   </div>
     <section class="wrapper !bg-[#ffffff]">
       <div class="container pt-10 xl:pt-[4.5rem] lg:pt-[4.5rem] md:pt-[4.5rem] pb-[4.5rem] xl:pb-24 lg:pb-24 md:pb-24 !text-center">
-        <div class="flex flex-wrap mx-[-15px] xl:mx-[-35px] lg:mx-[-20px] mt-[-50px] xl:mt-0 !mb-[4.5rem] items-center">
-          <div class="xl:w-7/12 lg:w-7/12 w-full flex-[0_0_auto] px-[15px] xl:px-[35px] lg:px-[20px] mt-[50px] xl:mt-0 max-w-full xl:!order-2 lg:!order-2">
-            <figure class="m-0 p-0"><img class="img-auto" src="{% static 'assets/img/illustrations/presento.png' %}" srcset="{% static 'assets/img/illustrations/presento@2x.png' 2x %}" alt="image"></figure>
-          </div>
-          <!-- /words-->
-          <div class="md:w-10/12 md:!ml-[8.33333333%] lg:!ml-0 lg:w-5/12 xl:!ml-0 xl:w-5/12 w-full flex-[0_0_auto] px-[15px] xl:px-[35px] lg:px-[20px] mt-[50px] xl:mt-0 max-w-full text-center lg:text-left xl:text-left">
-            <h1 class="xl:text-[2.7rem] text-[calc(1.395rem_+_1.74vw)] !leading-[1.15] mb-5 md:mx-[-1.25rem] lg:mx-0 mt-7">
-              An Online Tool<br class="xl:!hidden lg:!hidden md:!hidden">
-              Converting <br>
-              <span class="rotator-fade-1 text-[#5eb9f0]">
-                <span class="rotator-item">Presentation,</span>
-                <span class="rotator-item">PPTX</span>
-              </span>
-              <br>
-              <span class="rotator-fade-2 text-[#5eb9f0]">
-                <span class="rotator-item">To Video,</span>
-                <span class="rotator-item">To MP4</span>
-              </span>
-            </h1>
-            <p class="lead !text-[1.1rem] !leading-[1.55] font-medium mb-7">We save your time with a single click.</p>
-            <form action="{% url 'upload_file' %}" method="post" enctype="multipart/form-data" class="flex flex-col items-center">
-              {% csrf_token %}
-              <!-- Upload Box -->
-            <label for="file-upload" id="upload-label" class="upload-box cursor-pointer p-4 bg-gray-300 text-center rounded-md w-80">
-              Click here to upload your PowerPoint file
-            </label>
-            <input type="file" id="file-upload" name="file" accept=".pptx" class="hidden" onchange="updateFileName()" />
-            <!-- Submit Button -->
-            <button type="submit" class="btn btn-sky text-white !bg-[#73ca73] border-[#73ca73] hover:text-[#73ca73] hover:!bg-white hover:border-[#73ca73] focus:shadow-[rgba(88,167,216,1)] active:text-[#73ca73] active:!bg-[#73ca73] active:border-[#73ca73] disabled:text-white disabled:!bg-[#73ca73] disabled:border-[#73ca73] !rounded-[50rem] !mr-2">
-              Submit
-            </button>
-            </form>
+        <div class="flex flex-wrap items-center mx-[-15px] xl:mx-[-35px] lg:mx-[-20px] mt-[-50px] xl:mt-0 !mb-[4.5rem]">
+          <!-- Image Section -->
+          <div class="flex justify-center items-center mt-10">
+            <figure class="m-0 p-0">
+                <img class="img-auto" src="{% static 'assets/img/illustrations/presento-about.png' %}" srcset="{% static 'assets/img/illustrations/presento-about@2x.png' 2x %}" alt="image">
+            </figure>
         </div>
+        
+          <!-- Announcement Board -->
+          <div class="announcement-board md:w-5/12 lg:w-5/12 w-full flex-[0_0_auto] px-[15px] xl:px-[35px] lg:px-[20px] mt-5 xl:mt-0">
+              <h1 class="announcement-title xl:text-[2.7rem] text-[calc(1.395rem_+_1.74vw)] !leading-[1.15] mb-5">
+                Story
+              </h1>
+              <p class="text-lg">My name is Thanh. I'm an senior at SDSU majoring in Computer Science. I was looking for a side project for summer, while prof. Dabish give the idea of text to speech. We worked the whole summer to find out different approaches and python libraries to archieve this project. Here we are today.</p>
+              <h2 class="announcement-title xl:text-[2.7rem] text-[calc(1.395rem_+_1.74vw)] !leading-[1.15] mb-5">
+                Project: PresentoAI
+            </h2>
+              <p class="text-lg">The project is about converting a PowerPoint file into video. As the demand for online courses increases and becomes more popular after the Covid pandemic, we believe that a tool to help convert presentations into videos is a necessity and a quick solution for many people. Understanding that market, we quickly created this conversion tool to help people save time recording audio and video.<br>
+                Because it is the first version, there may be many bugs, please send us feedback about the problems you encounter. We will fix and update newer versions as soon as possible.</p>
+          </div>
       </div>
       </div>
       <!-- /.container -->

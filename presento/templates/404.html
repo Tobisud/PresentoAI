@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
-{% load static %}
-<head>
+
+<head>{% load static %}
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="An free convertor that convert pptx file into mp4 using slides and speaker notes.">
@@ -73,16 +73,6 @@
     font-size: 18px; 
   }
 }
-  .upload-box {
-      /* Style for the upload box */
-      border: 2px dashed #5eb9f0; /* Add a dashed border */
-      background-color: #f0f0f0; /* Grey background */
-      transition: background-color 0.3s;
-  }
-
-  .upload-box:hover {
-      background-color: #e0e0e0; /* Darker grey on hover */
-  }
   </style>
 </head>
 
@@ -118,7 +108,6 @@
                 <li class="nav-item hidden xl:block lg:block md:block">
                   <a href="{% url 'contact' %}" class="btn btn-sm btn-sky text-white !bg-[#5eb9f0] border-[#5eb9f0] hover:text-white hover:!bg-[#5eb9f0] hover:border-[#5eb9f0] focus:shadow-[rgba(88,167,216,1)] active:text-white active:!bg-[#5eb9f0] active:border-[#5eb9f0] disabled:text-white disabled:!bg-[#5eb9f0] disabled:border-[#5eb9f0]  !rounded-[50rem]">Contact</a>
                 </li>
-                
               </ul>
             </div>
           </div>
@@ -130,36 +119,14 @@
       <div class="container pt-10 xl:pt-[4.5rem] lg:pt-[4.5rem] md:pt-[4.5rem] pb-[4.5rem] xl:pb-24 lg:pb-24 md:pb-24 !text-center">
         <div class="flex flex-wrap mx-[-15px] xl:mx-[-35px] lg:mx-[-20px] mt-[-50px] xl:mt-0 !mb-[4.5rem] items-center">
           <div class="xl:w-7/12 lg:w-7/12 w-full flex-[0_0_auto] px-[15px] xl:px-[35px] lg:px-[20px] mt-[50px] xl:mt-0 max-w-full xl:!order-2 lg:!order-2">
-            <figure class="m-0 p-0"><img class="img-auto" src="{% static 'assets/img/illustrations/presento.png' %}" srcset="{% static 'assets/img/illustrations/presento@2x.png' 2x %}" alt="image"></figure>
+            <figure class="m-0 p-0"><img class="img-auto" src="{% static 'assets/img/illustrations/presento-404.png' %}" srcset="{% static 'assets/img/illustrations/presento-404@2x.png' 2x %}" alt="image"></figure>
           </div>
           <!-- /words-->
           <div class="md:w-10/12 md:!ml-[8.33333333%] lg:!ml-0 lg:w-5/12 xl:!ml-0 xl:w-5/12 w-full flex-[0_0_auto] px-[15px] xl:px-[35px] lg:px-[20px] mt-[50px] xl:mt-0 max-w-full text-center lg:text-left xl:text-left">
             <h1 class="xl:text-[2.7rem] text-[calc(1.395rem_+_1.74vw)] !leading-[1.15] mb-5 md:mx-[-1.25rem] lg:mx-0 mt-7">
-              An Online Tool<br class="xl:!hidden lg:!hidden md:!hidden">
-              Converting <br>
-              <span class="rotator-fade-1 text-[#5eb9f0]">
-                <span class="rotator-item">Presentation,</span>
-                <span class="rotator-item">PPTX</span>
-              </span>
-              <br>
-              <span class="rotator-fade-2 text-[#5eb9f0]">
-                <span class="rotator-item">To Video,</span>
-                <span class="rotator-item">To MP4</span>
-              </span>
-            </h1>
-            <p class="lead !text-[1.1rem] !leading-[1.55] font-medium mb-7">We save your time with a single click.</p>
-            <form action="{% url 'upload_file' %}" method="post" enctype="multipart/form-data" class="flex flex-col items-center">
-              {% csrf_token %}
-              <!-- Upload Box -->
-            <label for="file-upload" id="upload-label" class="upload-box cursor-pointer p-4 bg-gray-300 text-center rounded-md w-80">
-              Click here to upload your PowerPoint file
-            </label>
-            <input type="file" id="file-upload" name="file" accept=".pptx" class="hidden" onchange="updateFileName()" />
-            <!-- Submit Button -->
-            <button type="submit" class="btn btn-sky text-white !bg-[#73ca73] border-[#73ca73] hover:text-[#73ca73] hover:!bg-white hover:border-[#73ca73] focus:shadow-[rgba(88,167,216,1)] active:text-[#73ca73] active:!bg-[#73ca73] active:border-[#73ca73] disabled:text-white disabled:!bg-[#73ca73] disabled:border-[#73ca73] !rounded-[50rem] !mr-2">
-              Submit
-            </button>
-            </form>
+              404 Page Not Found Error<br class="xl:!hidden lg:!hidden md:!hidden">    
+            <p class="lead !text-[1.1rem] !leading-[1.55] font-medium mb-7">There is something wrong. <br>
+            If you encouter this again please send us a message.</p>
         </div>
       </div>
       </div>
@@ -167,21 +134,6 @@
 
   <script src="{% static 'assets/js/plugins.js' %}"></script>
   <script src="{% static 'assets/js/theme.js' %}"></script>
-  <script>
-    function updateFileName() {
-        const input = document.getElementById('file-upload');
-        const fileNameDisplay = document.getElementById('file-name');
-        const uploadLabel = document.getElementById('upload-label');
-
-        // Check if a file is selected
-        if (input.files.length > 0) {
-            const fileName = input.files[0].name;
-            uploadLabel.textContent = `Selected file: ${fileName}`; // Change label to file name
-        } else {
-            uploadLabel.textContent = 'Click here to upload your PowerPoint file'; // Reset label
-        }
-    }
-</script>
 </body>
 
 </html>

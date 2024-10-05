@@ -1,18 +1,13 @@
 import os
 import subprocess
 from django.shortcuts import render, redirect, get_object_or_404
-from django.core.files.storage import default_storage
-from django.core.files.base import ContentFile
-from django.http import HttpResponse
 from django.conf import settings
 from .models import Presento
 import uuid
 import logging
 from django.http import JsonResponse
-import threading
-import sys
+from pathlib import Path
 import locale
-from django.http import Http404
 
 logger=logging.getLogger(__name__)
 
@@ -126,3 +121,17 @@ def download_file(request, pk):
 def home(request):
     #file = Presento.objects.all()  # Fetch all presentations
     return render(request, 'home.html')#, {'presentations': file})
+
+def about(request):
+    return render(request, 'about.html')
+
+def news(request):
+    return render(request, 'news.html')
+
+def contact(request):
+    return render(request, 'contact.html')
+
+# def list_static_files(request):
+#     static_dir = Path(__file__).resolve().parent.parent / 'staticfiles' / 'assets' / 'css'
+#     files = os.listdir(static_dir)
+#     return JsonResponse(files)

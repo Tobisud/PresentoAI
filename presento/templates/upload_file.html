@@ -75,7 +75,7 @@
         <div class="container xl:flex-row lg:flex-row !flex-nowrap items-center">
           <div class="navbar-brand w-full">
             <a href="{% url 'home' %}">
-              <img src="{% static  'assets/img/Presento-logo.png' %}" style="width: 450px; height: auto;">
+              <img src="{% static  'assets/img/Presento-logo.png' %}" style="width: 350px; height: auto;">
             </a>
           </div>
           <div class="navbar-collapse offcanvas offcanvas-nav offcanvas-start">
@@ -85,20 +85,20 @@
             <div class="offcanvas-body xl:!ml-auto lg:!ml-auto flex flex-col !h-full mb-0">
                 <ul class="navbar-nav flex flex-col">
                   <li class="nav-item mb-2">
-                    <a class="nav-link font-bold tracking-[-0.01rem] hover:!text-[#54a8c7] after:!text-[#54a8c7]" href="./index.html">Home</a>
+                    <a class="nav-link font-bold tracking-[-0.01rem] hover:!text-[#54a8c7] after:!text-[#54a8c7]" href="{% url 'home' %}">Home</a>
                   </li>
                   <li class="nav-item mb-2">
-                    <a class="nav-link font-bold tracking-[-0.01rem] hover:!text-[#54a8c7] after:!text-[#54a8c7]" href="./about.html">About</a>
+                    <a class="nav-link font-bold tracking-[-0.01rem] hover:!text-[#54a8c7] after:!text-[#54a8c7]" href="{% url 'about' %}">About</a>
                   </li>
                   <li class="nav-item mb-2"></li>
-                    <a class="nav-link font-bold tracking-[-0.01rem] hover:!text-[#54a8c7] after:!text-[#54a8c7]" href="./news.html">What's new</a>
+                    <a class="nav-link font-bold tracking-[-0.01rem] hover:!text-[#54a8c7] after:!text-[#54a8c7]" href="{% url 'news' %}">What's new</a>
                   </li>
                 </ul>
             </div>
             <div class="navbar-other xl:!ml-auto lg:!ml-auto flex flex-col !h-full mb-0">
               <ul class="navbar-nav flex-row items-center ml-auto">
                 <li class="nav-item hidden xl:block lg:block md:block">
-                  <a href="./contact.html" class="btn btn-sm btn-sky text-white !bg-[#5eb9f0] border-[#5eb9f0] hover:text-white hover:!bg-[#5eb9f0] hover:border-[#5eb9f0] focus:shadow-[rgba(88,167,216,1)] active:text-white active:!bg-[#5eb9f0] active:border-[#5eb9f0] disabled:text-white disabled:!bg-[#5eb9f0] disabled:border-[#5eb9f0]  !rounded-[50rem]">Contact</a>
+                  <a href="{% url 'contact' %}" class="btn btn-sm btn-sky text-white !bg-[#5eb9f0] border-[#5eb9f0] hover:text-white hover:!bg-[#5eb9f0] hover:border-[#5eb9f0] focus:shadow-[rgba(88,167,216,1)] active:text-white active:!bg-[#5eb9f0] active:border-[#5eb9f0] disabled:text-white disabled:!bg-[#5eb9f0] disabled:border-[#5eb9f0]  !rounded-[50rem]">Contact</a>
                 </li>
                 
               </ul>
