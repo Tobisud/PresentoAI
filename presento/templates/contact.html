@@ -99,48 +99,69 @@
             </figure>
           </div>
           
-          <div class="md:w-10/12 lg:w-5/12 xl:w-5/12 w-full flex-[0_0_auto] px-[15px] xl:px-[35px] lg:px-[20px] mt-[50px] xl:mt-0 max-w-full text-center flex flex-col justify-center items-center">
+          <div class="md:w-10/12 lg:w-5/12 xl:w-5/12 w-full flex-[0_0_auto] px-[15px] xl:px-[35px] lg:px-[20px] mt-[50px] xl:mt-0 max-w-full text-left flex flex-col justify-center items-center">
             <h1 class="lg:text-[2.0rem] text-[calc(1rem_+_1.2vw)] !leading-[1.15] mb-5">
                 <p>We value your feedback!</p>
             </h1>
-            
-            <textarea id="feedback-textbox" class="border rounded-lg p-2 w-full h-32 mt-4" placeholder="Enter your feedback here..."></textarea>
-            
-            <button id="send-button" type="button" class="btn btn-sky text-white !bg-[#73ca73] border-[#73ca73] hover:text-[#73ca73] hover:!bg-white hover:border-[#73ca73] focus:shadow-[rgba(88,167,216,1)] active:text-[#73ca73] active:!bg-[#73ca73] active:border-[#73ca73] disabled:text-white disabled:!bg-[#73ca73] disabled:border-[#73ca73] !rounded-[50rem] mt-4">
+            <form id="feedback-form">
+              <label for="name-input">Your Name:</label><br>
+              <input type="text" class="border rounded-lg p-2 w-full h-32 mt-4" id="name-input" placeholder="Your Name"><br><br>
+      
+              <label for="email-input">Your Email:</label><br>
+              <input type="email" class="border rounded-lg p-2 w-full h-32 mt-4" id="email-input" placeholder="Your Email"><br><br>
+      
+              <label for="feedback-textbox">Your Feedback:</label><br>
+              <textarea id="feedback-textbox" class="border rounded-lg p-2 w-full h-32 mt-4" placeholder="Enter your feedback here..."></textarea>
+              <button id="send-button" type="button" class="btn btn-sky text-white !bg-[#73ca73] border-[#73ca73] hover:text-[#73ca73] hover:!bg-white hover:border-[#73ca73] focus:shadow-[rgba(88,167,216,1)] active:text-[#73ca73] active:!bg-[#73ca73] active:border-[#73ca73] disabled:text-white disabled:!bg-[#73ca73] disabled:border-[#73ca73] !rounded-[50rem] mt-4">
                 Send Feedback
-            </button>
+              </button>
+            </form>
         </div>
       </div>
       
       <!-- /.container -->
-      <script src="https://cdn.emailjs.com/dist/email.min.js"></script>
+      <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
       <script>
-          (function() {
-              emailjs.init("8N9oyNopqR5LSJSXT"); // Replace with your EmailJS user ID
-          })();
-      
-          document.getElementById('send-button').addEventListener('click', function() {
-              const feedback = document.getElementById('feedback-textbox').value;
-      
-              if (feedback.trim() === '') {
-                  alert('Please enter your feedback before sending.');
-                  return;
-              }
-      
-              const templateParams = {
-                  feedback: feedback
-              };
-      
-              emailjs.send('service_6jnc0vt', 'template_hoa8ndv', templateParams)
-              .then(function(response) {
-                  alert('Thank you for your feedback!');
-                  document.getElementById('feedback-textbox').value = ''; // Clear the textbox
-              }, function(error) {
-                  console.error('Error:', error);
-                  alert('There was an error submitting your feedback. Please try again.');
-              });
-          });
-      </script>
+        // Initialize EmailJS with your user ID
+        (function() {
+            emailjs.init("TAHYJL_PGO5zTvJXQ"); // Replace with your EmailJS user ID
+        })();
+
+        // Set up the send button click event listener
+        document.getElementById('send-button').addEventListener('click', function() {
+            // Get values from the input fields
+            const name = document.getElementById('name-input').value;
+            const email = document.getElementById('email-input').value;
+            const feedback = document.getElementById('feedback-textbox').value;
+
+            // Validate that all fields are filled in
+            if (name.trim() === '' || email.trim() === '' || feedback.trim() === '') {
+                alert('Please fill in all fields before sending.');
+                return;
+            }
+
+            // Prepare the parameters for the email template
+            const templateParams = {
+                to_name: 'Thanh', // You can replace this or leave static
+                from_name: name, // Sender's name
+                message: feedback, // Feedback message
+                reply_to: email // Sender's email
+            };
+
+            // Send the email
+            emailjs.send('service_6jnc0vt', 'template_hoa8ndv', templateParams)
+            .then(function(response) {
+                alert('Thank you for your feedback!');
+                // Clear the input fields after successful send
+                document.getElementById('feedback-textbox').value = '';
+                document.getElementById('name-input').value = '';
+                document.getElementById('email-input').value = '';
+            }, function(error) {
+                console.error('Error:', error);
+                alert('There was an error submitting your feedback. Please try again.');
+            });
+        });
+    </script>
 </body>
 
 </html>
