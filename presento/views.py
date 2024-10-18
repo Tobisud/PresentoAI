@@ -8,15 +8,17 @@ import logging
 from django.http import JsonResponse
 from pathlib import Path
 import locale
-
+import threading
 logger=logging.getLogger(__name__)
-
+task_lock = threading.Lock()
 def upload_file(request):
     if request.method == 'POST' and request.FILES.get('file'):
         pptx_file = request.FILES['file']
         # Generate a process ID
         process_id = uuid.uuid4().hex
+        model_choice = int(request.POST.get('model_choice'))
         print(process_id)
+        print(model_choice)
         #Create folder name: ID
         pross_dir=os.path.join(settings.MEDIA_ROOT,process_id)
         os.makedirs(pross_dir)
@@ -29,16 +31,13 @@ def upload_file(request):
         with open(file_path,'wb+')as f:
             for chunk in pptx_file.chunks():
                 f.write(chunk)
-        presentation = Presento(title=pptx_file.name, pptx_file=file_path, process_id=process_id)
+        presentation = Presento(title=pptx_file.name, pptx_file=file_path, process_id=process_id, model_choice=model_choice)
         presentation.save()
-        # Call the run_python_script function
         
         # Return the response
-        return render(request, 'upload_file.html', {'process_id': process_id})
-    else:
-        return render(request, 'upload_file.html')
+        return render(request, 'upload_file.html', {'process_id': process_id, 'model_choice':model_choice} )
 
-def run_python_script(request, process_id):
+def run_python_script(request, process_id, model_choice):
     # Construct the path to the script
     os.environ["LANG"] = "en_US.UTF-8"
     os.environ["LC_ALL"] = "en_US.UTF-8"
@@ -47,10 +46,11 @@ def run_python_script(request, process_id):
     script_path = os.path.join(settings.BASE_DIR, 'scripts', 'tts_v2.py')
     # Ensure that the path is properly quoted
     script_path_escaped = f'"{script_path}"' 
-    # Construct the command to run the script
-    command = f"python {script_path_escaped} {process_id}"
+    # Construct the command to run the script 
+    command = f"python {script_path_escaped} {process_id} {model_choice}"
     logger.info(f"Running command: {command}")  # Log command
-    
+    presentation = Presento.objects.get(process_id=process_id)
+
     try:
         # Run the command and capture output
         result = subprocess.run(command, check=True, capture_output=True, text=True, encoding='utf-8')
@@ -58,7 +58,6 @@ def run_python_script(request, process_id):
         # Log the script's output and errors
         logger.info(f"Script output: {result.stdout}")
         logger.info(f"Script error: {result.stderr}")
-        presentation = Presento.objects.get(process_id=process_id)
         presentation.status = 'completed'
         presentation.save()
         # Return a JSON response indicating success
@@ -69,26 +68,43 @@ def run_python_script(request, process_id):
         return JsonResponse({'status': 'error', 'output': e.stderr})
    
 def check_status(request, process_id):
-
     logger.info(f"Checking status for process_id: {process_id}")
-    response = run_python_script(request, process_id)
+    # Retrieve the presentation object based on process_id
+   
+    #model_choice = presentation.model_choice  
+    #response = run_python_script(request, process_id, model_choice)
     try:
-        # Retrieve the presentation object based on process_id
         presentation = Presento.objects.get(process_id=process_id)
-        
-        # Get the current status from the presentation object
+        if presentation.status == 'pending' and not presentation.is_running:
+            # Run the script in a separate thread if status is still pending
+            presentation.is_running = True  # Mark task as running
+            presentation.save()
+            thread = threading.Thread(target=run_python_script, args=(request, process_id, presentation.model_choice))
+            thread.start()
+              # Get the current status from the presentation object
         status = presentation.status
-        
         logger.info(f"Presentation status: {status}")
-
         if status == 'completed':
-            return JsonResponse({'status': 'completed', 'presentation_id': presentation.id})
-        else:
-            return JsonResponse({'status': 'pending'})
+            presentation.is_running = False  # Mark task as not running
+            presentation.save()
+        response_data = {
+            'status': presentation.status,
+            'process_percentage': presentation.process_percentage,  # Ensure percentage is returned
+            'presentation_id': presentation.id if presentation.status == 'completed' else None
+        }
+        return JsonResponse(response_data)
     except Presento.DoesNotExist:
         logger.error(f"Presentation with process_id {process_id} does not exist.")
         return JsonResponse({'status': 'error'}, status=404)
-    
+
+def upload_proc_percentage(process_id, process_per):
+    try:
+        presentation = Presento.objects.get(process_id=process_id)
+        presentation.process_percentage=int(process_per)
+        presentation.save()
+    except Presento.DoesNotExist:
+        print(f"Process ID {process_id} not found.")
+
 def download_file(request, pk):
     presentation = get_object_or_404(Presento, pk=pk)
     if not presentation:

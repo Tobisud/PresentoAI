@@ -124,6 +124,7 @@
             <div id="loading">
               <div class="loader"></div>
               <p>Processing your file, please wait...</p>
+              <p id="process-percentage">Progress: <span id="process-percentage-value">0%</span></p>
           </div>
       </div>
       </div>
@@ -133,14 +134,17 @@
   <script>
     function checkStatus() {
         const processId = "{{ process_id }}";
+        const percentageElement = document.getElementById('process-percentage-value');
         fetch(`/check_status/${processId}/`)
             .then(response => response.json())
             .then(data => {
+                const percentage = data.process_percentage;  // Assuming this is returned from the server
+                percentageElement.textContent = `${percentage}%`
                 if (data.status === 'completed') {
                     window.location.href = `/presento/${data.presentation_id}/download/`;
                 } else if (data.status === 'pending') {
                     // Optionally update the user or show a spinner
-                    setTimeout(checkStatus, 5000); // Check again in 5 seconds
+                    setTimeout(checkStatus, 1000); // Check again in 5 seconds
                 } else {
                     // Handle other statuses or errors
                     console.error('Unexpected status:', data.status);

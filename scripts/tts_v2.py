@@ -9,13 +9,24 @@ from TTS.utils.manage import ModelManager
 from TTS.utils.synthesizer import Synthesizer
 import argparse
 import unicodedata
-import re
 import logging
 import sys
+import sys
+project_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))  # Adjust this based on your folder structure
+sys.path.append(project_path)
+# Set up Django settings
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "presentoapi.settings")  # Replace 'your_project_name' with the actual project name
+
+# Initialize Django
+import django
+django.setup()
+from presento.views import upload_proc_percentage as cur_per
 
 class presentoai():
-    def __init__(self, procID):
+    def __init__(self, procID, voice_model):
         self.procID = procID
+        self.voice_model=voice_model
+        self.process_percentage = 0
 
     @staticmethod
     def sort_key(file_name):
@@ -35,6 +46,14 @@ class presentoai():
         # Here we use ASCII for simplicity, replace unsupported characters with an empty string
         text = text.encode('ascii', 'replace').decode('ascii')      
         return text
+    
+    # Method to update process percentage
+    def update_process_percentage(self, percentage): 
+        return  cur_per(self.procID,percentage)
+
+    # Method to retrieve the current process percentage
+    def get_process_percentage(self):
+        return self.process_percentage
 
     #get speaker not from slides
     def getText(self, file_path):
@@ -47,23 +66,27 @@ class presentoai():
 
 
     #convert speaker note into wav files
-    def getWav (self,folder_path):
+    def getWav (self,folder_path, model_choice):
         folder_name=os.path.basename(folder_path)
         file_path = os.path.abspath(os.path.join(folder_path,folder_name+'.pptx'))
         des_path = os.path.join(folder_path,"To_Wavs")
         if not os.path.exists(des_path):
             os.makedirs(des_path)
         contents = self.getText(file_path)
-        models_path = os.path.join(os.getcwd(), 'TTS','.models.json')
-        model_manager = ModelManager(models_path)
-        model_path, config_path, model_item = model_manager.download_model("tts_models/en/ljspeech/tacotron2-DDC_ph")
-        voc_path, voc_config_path, _ = model_manager.download_model(model_item["default_vocoder"])
-        syn = Synthesizer(
-            tts_checkpoint=model_path,
-            tts_config_path=config_path,
-            vocoder_checkpoint=voc_path,
-            vocoder_config=voc_config_path
-        )
+        print(model_choice)
+        match int(model_choice):
+            case 1:
+                models_path = os.path.join(os.getcwd(), 'TTS','.models.json')
+                print(models_path)
+                model_manager = ModelManager(models_path)
+                model_path, config_path, model_item = model_manager.download_model("tts_models/en/ljspeech/tacotron2-DDC_ph")
+                voc_path, voc_config_path, _ = model_manager.download_model(model_item["default_vocoder"])
+                syn = Synthesizer(
+                    tts_checkpoint=model_path,
+                    tts_config_path=config_path,
+                    vocoder_checkpoint=voc_path,
+                    vocoder_config=voc_config_path
+                )      
         #create wav files
         for i,text in enumerate(contents): 
             # outputs = syn.tts(text)
@@ -190,36 +213,49 @@ class presentoai():
         except:
             pass
 
-def main(ID):
-    print("Current working directory:", os.getcwd()) 
-    print("Python version:", sys.version)
-    print("Python executable:", sys.executable)
+def main(ID, voice_model):
+    # print("Current working directory:", os.getcwd()) 
+    # print("Python version:", sys.version)
+    # print("Python executable:", sys.executable)
     current_dir=os.path.join(os.getcwd(),'media')
-    procID=presentoai(ID)
+    cur_request=presentoai(ID,voice_model)
+    procID=cur_request.procID
+    voice_model=cur_request.voice_model
     print(procID)
-    folder_path=os.path.join(current_dir,ID)
-    print(folder_path)
+    print(voice_model)
+    folder_path=os.path.join(current_dir,procID)
+    # print(folder_path)
     output_path=[]
     for folder in os.listdir(folder_path):
         folder_path=os.path.join(folder_path,folder)
-        procID.clearUp(folder_path)
+        cur_request.clearUp(folder_path)
+        cur_request.update_process_percentage(10)
         #create images from pptx
-        procID.getImg(folder_path) 
+        cur_request.getImg(folder_path)
+        cur_request.update_process_percentage(15) 
         #create mp3 files from speaker note
-        procID.getWav(folder_path)
+        cur_request.getWav(folder_path, voice_model)
+        cur_request.update_process_percentage(35)
         #generate clip (mp4)
-        procID.getClip(folder_path)
+        cur_request.getClip(folder_path)
+        cur_request.update_process_percentage(50)
         #combine all mp3 files 
-        procID.combineAudio(folder_path)
+        cur_request.combineAudio(folder_path)
+        cur_request.update_process_percentage(75)
         #combine the mp3 and mp4 file
-        procID.video_wsound(folder_path)
+        cur_request.video_wsound(folder_path)
+        cur_request.update_process_percentage(90)
         #make sure remove all unnecessary folder
-        procID.clearUp(folder_path)
+        cur_request.clearUp(folder_path)
+        cur_request.update_process_percentage(100)
         output_path.append(os.path.join(folder_path,"output",folder+".mp4"))
         return(output_path)
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Process some IDs.")
+    parser = argparse.ArgumentParser(description="Process some IDs and voice model.")
     parser.add_argument('process_id', type=str, help='The process ID to be used')
+    parser.add_argument('voice_model', type=str, help='The voice model to be used')
     args = parser.parse_args()
-    main(args.process_id)
+    main(args.process_id, args.voice_model)
+
+#main(process_id="02bce7ee95924b29b6098dff016b4748",voice_model=1)
