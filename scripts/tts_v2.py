@@ -1,8 +1,23 @@
+#####set up django enviroment
 import os
+import sys
+project_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+sys.path.append(project_path)
+# Set up Django settings
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "presentoapi.settings")
+# Initialize Django
+import django
+django.setup()
+from presento.views import upload_proc_percentage as cur_per
+######
+
+###libraries
+
 from pydub import AudioSegment
 from moviepy.editor import ImageClip, concatenate_videoclips
 from moviepy.editor import VideoFileClip, AudioFileClip
 import shutil
+import subprocess
 from comtypes import client
 from pptx import Presentation
 from TTS.utils.manage import ModelManager
@@ -10,17 +25,9 @@ from TTS.utils.synthesizer import Synthesizer
 import argparse
 import unicodedata
 import logging
-import sys
-import sys
-project_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))  # Adjust this based on your folder structure
-sys.path.append(project_path)
-# Set up Django settings
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "presentoapi.settings")  # Replace 'your_project_name' with the actual project name
-
-# Initialize Django
-import django
-django.setup()
-from presento.views import upload_proc_percentage as cur_per
+import pyttsx3
+from close_capture import transcribe as scribe
+from close_capture import generate_subtitle_file as cc
 
 class presentoai():
     def __init__(self, procID, voice_model):
@@ -86,19 +93,27 @@ class presentoai():
                     tts_config_path=config_path,
                     vocoder_checkpoint=voc_path,
                     vocoder_config=voc_config_path
-                )      
-        #create wav files
-        for i,text in enumerate(contents): 
-            # outputs = syn.tts(text)
-            # syn.save_wav(outputs, os.path.join(des_path, f"{i+1}.wav"))  
-            # text = self.preprocess_text(text)  # Preprocess text here
-            try:
-                outputs = syn.tts(text)
-                syn.save_wav(outputs, os.path.join(des_path, f"{i + 1}.wav"))
-            except Exception as e:
-                logging.error(f"Error generating or saving WAV for text: {text} - {str(e)}")
-                print(f"Error processing text {i + 1}: {text}")           
-
+                )
+                #create wav files
+                for i,text in enumerate(contents): 
+                    # outputs = syn.tts(text)
+                    # syn.save_wav(outputs, os.path.join(des_path, f"{i+1}.wav"))  
+                    # text = self.preprocess_text(text)  # Preprocess text here
+                    try:
+                        outputs = syn.tts(text)
+                        syn.save_wav(outputs, os.path.join(des_path, f"{i + 1}.wav"))
+                    except Exception as e:
+                        logging.error(f"Error generating or saving WAV for text: {text} - {str(e)}")
+                        print(f"Error processing text {i + 1}: {text}")           
+            case 2: #using pytts to create male voice (rate -10)
+                engine = pyttsx3.init()
+                rate = engine.getProperty('rate')
+                engine.setProperty('rate', rate-10)
+                for i,text in enumerate(contents): 
+                    mytext = text 
+                    engine.save_to_file(mytext, os.path.join(des_path, str(i+1)+".wav"))
+                    engine.runAndWait()        
+        
     #cobine all wavs file into a complete wav
     def combineAudio (self, file_path):
         audio_path=os.path.join(file_path,"To_Wavs")
@@ -121,6 +136,12 @@ class presentoai():
         output_path=os.path.join(des_path,"full_audio.wav")
         full_audio.export(output_path, format='wav')
         print("Successfully combine all audio" + des_path+"\\"+"full_audio.wav")
+
+    def getCC (self,file_path):
+        audio_path=os.path.join(file_path,"To_Wavs","full_audio.wav")
+        language, segments = scribe(audio_path)
+        subtitle_file = cc(language,segments,file_path)
+        return subtitle_file
 
     #get duration from each wav files
     def getDuration(self,file_path):
@@ -189,7 +210,7 @@ class presentoai():
         #define
         video_path = os.path.join(file_path, "To_Mp4", "temp.mp4")
         audio_path = os.path.join(file_path, "To_Wavs", "full_audio.wav")
-        output_folder = os.path.join(file_path, "output")
+        output_folder = os.path.join(file_path, "temp")
         if not os.path.exists(output_folder):
             os.makedirs(output_folder)
         output_path = os.path.join(output_folder,self.procID+".mp4")
@@ -203,12 +224,36 @@ class presentoai():
         final_clip.write_videofile(output_path, codec='libx264', audio_codec='aac')
         print("Successfully created a video at "+ output_path)
 
+    def embeded_cc(self,file_path):
+        video_folder = os.path.join(file_path, "temp")
+        output_folder=os.path.join(file_path,"output")
+        video_path = os.path.join(video_folder,self.procID+".mp4")
+        subtitle_path=os.path.join(output_folder, "sub-presetation.en.srt")
+        output_path=os.path.join(output_folder,self.procID+".mp4")
+        try:
+        # Construct the ffmpeg command to embed the soft subtitle
+            command = [
+                'ffmpeg',
+                '-i', video_path,  # Input video
+                '-i', subtitle_path,  # Input subtitle
+                '-c', 'copy',  # Copy video and audio without re-encoding
+                '-c:s', 'mov_text',  # Codec for subtitles (mov_text for MP4 container)
+                output_path
+            ]
+            # Execute the command using subprocess
+            subprocess.run(command, check=True)
+            print(f"Subtitle embedded successfully! Output saved to: {output_path}")
+        except subprocess.CalledProcessError as e:
+            print(f"Error: {e}")
+            print("Failed to embed subtitle into video.")
+
     def clearUp(self,file_path):
         #delete all temporaty folders
         try:
             shutil.rmtree(os.path.join(file_path, "To_Mp4"))
             shutil.rmtree(os.path.join(file_path, "To_Wavs"))
             shutil.rmtree(os.path.join(file_path, "To_Pngs"))
+            shutil.rmtree(os.path.join(file_path, "temp"))
             print("Successfully delete all redundant files")
         except:
             pass
@@ -241,14 +286,17 @@ def main(ID, voice_model):
         cur_request.update_process_percentage(50)
         #combine all mp3 files 
         cur_request.combineAudio(folder_path)
+        cur_request.getCC(folder_path)
         cur_request.update_process_percentage(75)
         #combine the mp3 and mp4 file
         cur_request.video_wsound(folder_path)
         cur_request.update_process_percentage(90)
+        cur_request.embeded_cc(folder_path)
+        cur_request.update_process_percentage(95)
         #make sure remove all unnecessary folder
         cur_request.clearUp(folder_path)
         cur_request.update_process_percentage(100)
-        output_path.append(os.path.join(folder_path,"output",folder+".mp4"))
+        output_path.append(os.path.join(folder_path,"output",folder+".mp4")) 
         return(output_path)
 
 if __name__ == "__main__":
