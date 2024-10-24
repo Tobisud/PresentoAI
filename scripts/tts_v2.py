@@ -232,8 +232,9 @@ class presentoai():
         output_path=os.path.join(output_folder,self.procID+".mp4")
         try:
         # Construct the ffmpeg command to embed the soft subtitle
+            ffmpeg=os.path.join(os.getcwd(), "ffmpeg","bin","ffmpeg.exe")
             command = [
-                'ffmpeg',
+                ffmpeg,
                 '-i', video_path,  # Input video
                 '-i', subtitle_path,  # Input subtitle
                 '-c', 'copy',  # Copy video and audio without re-encoding
@@ -306,4 +307,3 @@ if __name__ == "__main__":
     args = parser.parse_args()
     main(args.process_id, args.voice_model)
 
-#main(process_id="02bce7ee95924b29b6098dff016b4748",voice_model=1)

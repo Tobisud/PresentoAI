@@ -45,3 +45,5 @@ def generate_subtitle_file(language, segments, output_path):
     f = open(subtitle_file, "w")
     f.write(text)
     f.close()
+
+    
