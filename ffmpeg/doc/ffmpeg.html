@@ -191,11 +191,11 @@ files only contain one elementary stream).
 <p>A schematic representation of a demuxer looks like this:
 </p><pre class="verbatim">┌──────────┬───────────────────────┐
 │ demuxer  │                       │ packets for stream 0
-╞══════════╡ elementary stream 0   ├──────────────────────⮞
+╞══════════╡ elementary stream 0   ├──────────────────────►
 │          │                       │
 │  global  ├───────────────────────┤
 │properties│                       │ packets for stream 1
-│   and    │ elementary stream 1   ├──────────────────────⮞
+│   and    │ elementary stream 1   ├──────────────────────►
 │ metadata │                       │
 │          ├───────────────────────┤
 │          │                       │
@@ -203,10 +203,10 @@ files only contain one elementary stream).
 │          │                       │
 │          ├───────────────────────┤
 │          │                       │ packets for stream N
-│          │ elementary stream N   ├──────────────────────⮞
+│          │ elementary stream N   ├──────────────────────►
 │          │                       │
 └──────────┴───────────────────────┘
-     ⯅
+     ▲
      │
      │ read from file, network stream,
      │     grabbing device, etc.
@@ -221,7 +221,7 @@ may also exist on its own (see <a class="ref" href="#Loopback-decoders">Loopback
 <p>A schematic representation of a decoder looks like this:
 </p><pre class="verbatim">          ┌─────────┐
  packets  │         │ raw frames
-─────────⮞│ decoder ├────────────⮞
+─────────►│ decoder ├────────────►
           │         │
           └─────────┘
 </pre>
@@ -243,7 +243,7 @@ this:
              │  simple filtergraph    │
  frames from ╞════════════════════════╡ frames for
  a decoder   │  ┌───────┐  ┌───────┐  │ an encoder
-────────────⮞├─⮞│ yadif ├─⮞│ scale ├─⮞│────────────⮞
+────────────►├─►│ yadif ├─►│ scale ├─►│────────────►
              │  └───────┘  └───────┘  │
              └────────────────────────┘
 </pre>
@@ -259,13 +259,13 @@ encoder or another complex filtergraph&rsquo;s input.
           │               complex filtergraph               │
           ╞═════════════════════════════════════════════════╡
  frames   ├───────┐  ┌─────────┐      ┌─────────┐  ┌────────┤ frames
-─────────⮞│input 0├─⮞│ overlay ├─────⮞│ overlay ├─⮞│output 0├────────⮞
+─────────►│input 0├─►│ overlay ├─────►│ overlay ├─►│output 0├────────►
           ├───────┘  │         │      │         │  └────────┤
- frames   ├───────┐╭⮞│         │    ╭⮞│         │           │
-─────────⮞│input 1├╯ └─────────┘    │ └─────────┘           │
+ frames   ├───────┐╭►│         │    ╭►│         │           │
+─────────►│input 1├╯ └─────────┘    │ └─────────┘           │
           ├───────┘                 │                       │
  frames   ├───────┐ ┌─────┐ ┌─────┬─╯              ┌────────┤ frames
-─────────⮞│input 2├⮞│scale├⮞│split├───────────────⮞│output 1├────────⮞
+─────────►│input 2├►│scale├►│split├───────────────►│output 1├────────►
           ├───────┘ └─────┘ └─────┘                └────────┤
           └─────────────────────────────────────────────────┘
 </pre><p>Frames from second input are overlaid over those from the first. Frames from the
@@ -286,7 +286,7 @@ elementary stream</em> and sends its output to that muxer.
 <p>A schematic representation of an encoder looks like this:
 </p><pre class="verbatim">             ┌─────────┐
  raw frames  │         │ packets
-────────────⮞│ encoder ├─────────⮞
+────────────►│ encoder ├─────────►
              │         │
              └─────────┘
 </pre>
@@ -299,11 +299,11 @@ than one elementary stream), and write the resulting bytes into the output file
 <p>A schematic representation of a muxer looks like this:
 </p><pre class="verbatim">                       ┌──────────────────────┬───────────┐
  packets for stream 0  │                      │   muxer   │
-──────────────────────⮞│  elementary stream 0 ╞═══════════╡
+──────────────────────►│  elementary stream 0 ╞═══════════╡
                        │                      │           │
                        ├──────────────────────┤  global   │
  packets for stream 1  │                      │properties │
-──────────────────────⮞│  elementary stream 1 │   and     │
+──────────────────────►│  elementary stream 1 │   and     │
                        │                      │ metadata  │
                        ├──────────────────────┤           │
                        │                      │           │
@@ -311,7 +311,7 @@ than one elementary stream), and write the resulting bytes into the output file
                        │                      │           │
                        ├──────────────────────┤           │
  packets for stream N  │                      │           │
-──────────────────────⮞│  elementary stream N │           │
+──────────────────────►│  elementary stream N │           │
                        │                      │           │
                        └──────────────────────┴─────┬─────┘
                                                     │
@@ -342,7 +342,7 @@ such a pipeline looks like this:
 │          │                     │
 │INPUT.mkv ├─────────────────────┤          ┌──────────────────────┬───────────┐
 │          │                     │ packets  │                      │   muxer   │
-│          │ elementary stream 1 ├─────────⮞│  elementary stream 0 ╞═══════════╡
+│          │ elementary stream 1 ├─────────►│  elementary stream 0 ╞═══════════╡
 │          │                     │          │                      │OUTPUT.mp4 │
 │          ├─────────────────────┤          └──────────────────────┴───────────┘
 │          │                     │ unused
@@ -386,12 +386,12 @@ also impossible, since filters work on decoded frames.
 from two input files into a single output:
 </p><pre class="verbatim">┌──────────┬────────────────────┐         ┌────────────────────┬───────────┐
 │ demuxer 0│                    │ packets │                    │   muxer   │
-╞══════════╡elementary stream 0 ├────────⮞│elementary stream 0 ╞═══════════╡
+╞══════════╡elementary stream 0 ├────────►│elementary stream 0 ╞═══════════╡
 │INPUT0.mkv│                    │         │                    │OUTPUT.mp4 │
 └──────────┴────────────────────┘         ├────────────────────┤           │
 ┌──────────┬────────────────────┐         │                    │           │
 │ demuxer 1│                    │ packets │elementary stream 1 │           │
-╞══════════╡elementary stream 0 ├────────⮞│                    │           │
+╞══════════╡elementary stream 0 ├────────►│                    │           │
 │INPUT1.aac│                    │         └────────────────────┴───────────┘
 └──────────┴────────────────────┘
 </pre><p>that can be built by the commandline
@@ -410,11 +410,11 @@ demonstrated in following sections.
 multiple outputs:
 </p><pre class="verbatim">┌──────────┬─────────────────────┐          ┌───────────────────┬───────────┐
 │ demuxer  │                     │ packets  │                   │ muxer 0   │
-╞══════════╡ elementary stream 0 ├─────────⮞│elementary stream 0╞═══════════╡
+╞══════════╡ elementary stream 0 ├─────────►│elementary stream 0╞═══════════╡
 │          │                     │          │                   │OUTPUT0.mp4│
 │INPUT.mkv ├─────────────────────┤          └───────────────────┴───────────┘
 │          │                     │ packets  ┌───────────────────┬───────────┐
-│          │ elementary stream 1 ├─────────⮞│                   │ muxer 1   │
+│          │ elementary stream 1 ├─────────►│                   │ muxer 1   │
 │          │                     │          │elementary stream 0╞═══════════╡
 └──────────┴─────────────────────┘          │                   │OUTPUT1.mp4│
                                             └───────────────────┴───────────┘
@@ -457,18 +457,18 @@ file. This can be schematically represented as follows
 │          │                     │                                     │
 │INPUT.mkv ├─────────────────────┤ video    ┌─────────┐     raw        │
 │          │                     │ packets  │  video  │ video frames   │
-│          │ stream 1 (video)    ├─────────⮞│ decoder ├──────────────╮ │
+│          │ stream 1 (video)    ├─────────►│ decoder ├──────────────╮ │
 │          │                     │          │         │              │ │
 └──────────┴─────────────────────┘          └─────────┘              │ │
                                                                      ▼ ▼
                                                                      │ │
 ┌──────────┬─────────────────────┐ video    ┌─────────┐              │ │
 │ muxer    │                     │ packets  │  video  │              │ │
-╞══════════╡ stream 0 (video)    │⮜─────────┤ encoder ├──────────────╯ │
+╞══════════╡ stream 0 (video)    │◄─────────┤ encoder ├──────────────╯ │
 │          │                     │          │(libx264)│                │
 │OUTPUT.mp4├─────────────────────┤          └─────────┘                │
 │          │                     │                                     │
-│          │ stream 1 (audio)    │⮜────────────────────────────────────╯
+│          │ stream 1 (audio)    │◄────────────────────────────────────╯
 │          │                     │
 └──────────┴─────────────────────┘
 </pre><p>and implemented with the following commandline:
@@ -507,22 +507,22 @@ for clarity) makes it look like this:
 </p><pre class="verbatim">┌──────────┬───────────────┐
 │ demuxer  │               │          ┌─────────┐
 ╞══════════╡ video stream  │ packets  │  video  │ frames
-│INPUT.mkv │               ├─────────⮞│ decoder ├─────⮞───╮
+│INPUT.mkv │               ├─────────►│ decoder ├─────►───╮
 │          │               │          └─────────┘         │
 └──────────┴───────────────┘                              │
-                                  ╭───────────⮜───────────╯
+                                  ╭───────────◄───────────╯
                                   │   ┌────────────────────────┐
                                   │   │  simple filtergraph    │
                                   │   ╞════════════════════════╡
                                   │   │  ┌───────┐  ┌───────┐  │
-                                  ╰──⮞├─⮞│ yadif ├─⮞│ scale ├─⮞├╮
+                                  ╰──►├─►│ yadif ├─►│ scale ├─►├╮
                                       │  └───────┘  └───────┘  ││
                                       └────────────────────────┘│
                                                                 │
                                                                 │
 ┌──────────┬───────────────┐ video    ┌─────────┐               │
 │ muxer    │               │ packets  │  video  │               │
-╞══════════╡ video stream  │⮜─────────┤ encoder ├───────⮜───────╯
+╞══════════╡ video stream  │◄─────────┤ encoder ├───────◄───────╯
 │OUTPUT.mp4│               │          │         │
 │          │               │          └─────────┘
 └──────────┴───────────────┘
@@ -587,12 +587,12 @@ documentation for <samp class="option">-filter_complex</samp>.
 </p><pre class="verbatim">┌──────────┬───────────────┐
 │ demuxer  │               │   ┌─────────┐            ┌─────────┐    ┌────────────────────┐
 ╞══════════╡ video stream  │   │  video  │            │  video  │    │ null muxer         │
-│   INPUT  │               ├──⮞│ decoder ├──┬────────⮞│ encoder ├─┬─⮞│(discards its input)│
+│   INPUT  │               ├──►│ decoder ├──┬────────►│ encoder ├─┬─►│(discards its input)│
 │          │               │   └─────────┘  │         │(libx264)│ │  └────────────────────┘
 └──────────┴───────────────┘                │         └─────────┘ │
-                                 ╭───────⮜──╯   ┌─────────┐       │
+                                 ╭───────◄──╯   ┌─────────┐       │
                                  │              │loopback │       │
-                                 │ ╭─────⮜──────┤ decoder ├────⮜──╯
+                                 │ ╭─────◄──────┤ decoder ├────◄──╯
                                  │ │            └─────────┘
                                  │ │
                                  │ │
@@ -600,14 +600,14 @@ documentation for <samp class="option">-filter_complex</samp>.
                                  │ │  │complex filtergraph│
                                  │ │  ╞═══════════════════╡
                                  │ │  │  ┌─────────────┐  │
-                                 ╰─╫─⮞├─⮞│   hstack    ├─⮞├╮
-                                   ╰─⮞├─⮞│             │  ││
+                                 ╰─╫─►├─►│   hstack    ├─►├╮
+                                   ╰─►├─►│             │  ││
                                       │  └─────────────┘  ││
                                       └───────────────────┘│
                                                            │
 ┌──────────┬───────────────┐  ┌─────────┐                  │
 │ muxer    │               │  │  video  │                  │
-╞══════════╡ video stream  │⮜─┤ encoder ├───────⮜──────────╯
+╞══════════╡ video stream  │◄─┤ encoder ├───────◄──────────╯
 │  OUTPUT  │               │  │ (ffv1)  │
 │          │               │  └─────────┘
 └──────────┴───────────────┘
@@ -946,7 +946,8 @@ are part of the program and match the <var class="var">additional_stream_specifi
 <dt><samp class="option">m:<var class="var">key</var>[:<var class="var">value</var>]</samp></dt>
 <dd><p>Matches streams with the metadata tag <var class="var">key</var> having the specified value. If
 <var class="var">value</var> is not given, matches streams that contain the given tag with any
-value.
+value. The colon character &rsquo;:&rsquo; in <var class="var">key</var> or <var class="var">value</var> needs to be
+backslash-escaped.
 </p></dd>
 <dt><samp class="option">disp:<var class="var">dispositions</var>[:<var class="var">additional_stream_specifier</var>]</samp></dt>
 <dd><p>Matches streams with the given disposition(s). <var class="var">dispositions</var> is a list of
@@ -1844,9 +1845,9 @@ all sub-mix element&rsquo;s <var class="var">annotations</var>s
 demixing=parameter_id=998,
 recon_gain=parameter_id=101,
 layer=ch_layout=stereo,
-layer=ch_layout=5.1,
+layer=ch_layout=5.1(side),
 -stream_group type=iamf_mix_presentation:id=2:stg=0:annotations=en-us=Mix_Presentation,
-submix=parameter_id=100:parameter_rate=48000|element=stg=0:parameter_id=100:annotations=en-us=Scalable_Submix|layout=sound_system=stereo|layout=sound_system=5.1
+submix=parameter_id=100:parameter_rate=48000|element=stg=0:parameter_id=100:annotations=en-us=Scalable_Submix|layout=sound_system=stereo|layout=sound_system=5.1(side)
 -streamid 0:0 -streamid 1:1 -streamid 2:2 -streamid 3:3 output.iamf
 </pre></div>
 
@@ -2912,7 +2913,7 @@ lot.
 <h3 class="section"><span>5.11 Advanced options<a class="copiable-link" href="#Advanced-options"> &para;</a></span></h3>
 
 <dl class="table">
-<dt><samp class="option">-map [-]<var class="var">input_file_id</var>[:<var class="var">stream_specifier</var>][:<var class="var">view_specifier</var>][?] | <var class="var">[linklabel]</var> (<em class="emph">output</em>)</samp></dt>
+<dt><samp class="option">-map [-]<var class="var">input_file_id</var>[:<var class="var">stream_specifier</var>][:<var class="var">view_specifier</var>][:?] | <var class="var">[linklabel]</var> (<em class="emph">output</em>)</samp></dt>
 <dd>
 <p>Create one or more streams in the output file. This option has two forms for
 specifying the data source(s): the first selects one or more streams from some

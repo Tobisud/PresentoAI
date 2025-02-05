@@ -1041,7 +1041,6 @@ Each stream mirrors the <code class="code">id</code> and <code class="code">band
 <p>Can directly ingest DVD titles, specifically sequential PGCs, into
 a conversion pipeline. Menu assets, such as background video or audio,
 can also be demuxed given the menu&rsquo;s coordinates (at best effort).
-Seeking is not supported at this time.
 </p>
 <p>Block devices (DVD drives), ISO files, and directory structures are accepted.
 Activate with <code class="code">-f dvdvideo</code> in front of one of these inputs.
@@ -1142,12 +1141,12 @@ Default is false.
 </dd>
 <dt><samp class="option">menu_lu <var class="var">int</var></samp></dt>
 <dd><p>The menu language to demux. In DVD, menus are grouped by language.
-Default is 0, the first language unit.
+Default is 1, the first language unit.
 </p>
 </dd>
 <dt><samp class="option">menu_vts <var class="var">int</var></samp></dt>
 <dd><p>The VTS where the menu lives, or 0 if it is a VMG menu (root-level).
-Default is 0, VMG menu.
+Default is 1, menu of the first VTS.
 </p>
 </dd>
 <dt><samp class="option">pgc <var class="var">int</var></samp></dt>
@@ -1162,8 +1161,7 @@ Default is 0, automatically resolve from value of <samp class="option">title</sa
 <dd><p>The entry PG to start playback, in conjunction with <samp class="option">pgc</samp>.
 Alternative to setting <samp class="option">title</samp>.
 Chapter markers are not supported at this time.
-Default is 0, automatically resolve from value of <samp class="option">title</samp>, or
-start from the beginning (PG 1) of the menu.
+Default is 1, the first PG of the PGC.
 </p>
 </dd>
 <dt><samp class="option">preindex <var class="var">bool</var></samp></dt>
@@ -1172,7 +1170,6 @@ which requires a slow second pass read in order to index the chapter marker
 timestamps from NAV packets. This is non-ideal extra work for real optical drives.
 It is recommended and faster to use this option with a backup of the DVD structure
 stored on a hard drive. Not compatible with <samp class="option">pgc</samp> and <samp class="option">pg</samp>.
-Not applicable to menus.
 Default is 0, false.
 </p>
 </dd>
@@ -1357,6 +1354,14 @@ available in a metadata key named &quot;variant_bitrate&quot;.
 </dd>
 <dt><samp class="option">allowed_extensions</samp></dt>
 <dd><p>&rsquo;,&rsquo; separated list of file extensions that hls is allowed to access.
+</p>
+</dd>
+<dt><samp class="option">extension_picky</samp></dt>
+<dd><p>This blocks disallowed extensions from probing
+It also requires all available segments to have matching extensions to the format
+except mpegts, which is always allowed.
+It is recommended to set the whitelists correctly instead of depending on extensions
+Enabled by default.
 </p>
 </dd>
 <dt><samp class="option">max_reload</samp></dt>

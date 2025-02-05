@@ -200,7 +200,8 @@ are part of the program and match the <var class="var">additional_stream_specifi
 <dt><samp class="option">m:<var class="var">key</var>[:<var class="var">value</var>]</samp></dt>
 <dd><p>Matches streams with the metadata tag <var class="var">key</var> having the specified value. If
 <var class="var">value</var> is not given, matches streams that contain the given tag with any
-value.
+value. The colon character &rsquo;:&rsquo; in <var class="var">key</var> or <var class="var">value</var> needs to be
+backslash-escaped.
 </p></dd>
 <dt><samp class="option">disp:<var class="var">dispositions</var>[:<var class="var">additional_stream_specifier</var>]</samp></dt>
 <dd><p>Matches streams with the given disposition(s). <var class="var">dispositions</var> is a list of
@@ -937,6 +938,20 @@ while other writers always print them. This option enables one to control this b
 Valid values are <code class="code">always</code>/<code class="code">1</code>, <code class="code">never</code>/<code class="code">0</code> and <code class="code">auto</code>/<code class="code">-1</code>.
 Default is <var class="var">auto</var>.
 </p>
+</dd>
+<dt><samp class="option">-analyze_frames</samp></dt>
+<dd><p>Analyze frames and/or their side data up to the provided read interval,
+providing additional information that may be useful at a stream level.
+Must be paired with the <samp class="option">-show_streams</samp> option or it will have no effect.
+</p>
+<p>Currently, the additional fields provided by this option when enabled are the
+<code class="code">closed_captions</code> and <code class="code">film_grain</code> fields.
+</p>
+<p>For example, to analyze the first 20 seconds and populate these fields:
+</p><div class="example">
+<pre class="example-preformatted">ffprobe -show_streams -analyze_frames -read_intervals &quot;%+20&quot; INPUT
+</pre></div>
+
 </dd>
 <dt><samp class="option">-bitexact</samp></dt>
 <dd><p>Force bitexact output, useful to produce output which is not dependent

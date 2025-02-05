@@ -1,0 +1,100 @@
+1 
+00:00:0,000 --> 00:00:7,600 
+ Hello everyone, today I, am going to do a presentation on how to convert a PowerPoint file into a presentation video. 
+
+2 
+00:00:7,600 --> 00:00:15,200 
+ The process take a several stages, turning the PowerPoint file into images, turning the speaker note into audio files. 
+
+3 
+00:00:15,200 --> 00:00:19,800 
+ Using the images to create a video and finally combine the audio with the video. 
+
+4 
+00:00:19,800 --> 00:00:22,000 
+ The images stages 
+
+5 
+00:00:22,400 --> 00:00:29,200 
+ For this stages, I, am using Comtypes library in Python to export each slide as a PNG file. 
+
+6 
+00:00:29,200 --> 00:00:33,200 
+ The prose is easy to use and the exported pictures are high solution. 
+
+7 
+00:00:33,200 --> 00:00:38,500 
+ The cons is this will online work on window and required user to install PowerPoint. 
+
+8 
+00:00:38,500 --> 00:00:40,800 
+ The audio stages 
+
+9 
+00:00:40,800 --> 00:00:46,500 
+ In this step, we actually have many different types of Python libraries to support the conversion. 
+
+10 
+00:00:46,500 --> 00:00:51,900 
+ At first, I tried Google TDS but the voice was very stiff, rough and fake. 
+
+11 
+00:00:51,900 --> 00:01:0,700 
+ After that, I learned about PyTDS, the male voice is quite good with many improvements such as light accents and being able to customize the reading speed. 
+
+12 
+00:01:0,700 --> 00:01:5,700 
+ However, I'd like to find a library with better support and a more human like voice. 
+
+13 
+00:01:5,700 --> 00:01:9,100 
+ I tried TDS library by CoQi.ai. 
+
+14 
+00:01:9,100 --> 00:01:15,000 
+ By using pre-trained AI models, it can create female voices with clear accents and punctuation. 
+
+15 
+00:01:15,000 --> 00:01:20,400 
+ After testing on a few models, I feel most satisfied with Tacotron 2DCA. 
+
+16 
+00:01:20,400 --> 00:01:27,200 
+ In addition, it also allows users to train their own AI, but that takes a lot of resources and time. 
+
+17 
+00:01:27,200 --> 00:01:32,600 
+ First, I used PPTX library to extract all speaker notes in each slide. 
+
+18 
+00:01:32,600 --> 00:01:37,000 
+ Then, using the AI model to convert texts into audio files. 
+
+19 
+00:01:37,000 --> 00:01:43,100 
+ Finally, we combine all of the audio files into a single one using audio segment library. 
+
+20 
+00:01:43,100 --> 00:01:45,400 
+ The video stages. 
+
+21 
+00:01:45,400 --> 00:01:51,700 
+ Using the MoviePy library, I am able to create separate clips with different duration for each images. 
+
+22 
+00:01:51,700 --> 00:01:55,200 
+ The duration is depended on the corresponding audio file. 
+
+23 
+00:01:55,200 --> 00:01:59,300 
+ Then, by combining all the clips, I get the full video. 
+
+24 
+00:01:59,300 --> 00:02:4,400 
+ Now, the final step is adding the full audio file into the video and save. 
+
+25 
+00:02:4,400 --> 00:02:6,500 
+ Thank you for listening. 
+

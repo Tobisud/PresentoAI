@@ -30,7 +30,7 @@ urlpatterns = [
     path('upload/', views.upload_file, name='upload_file'),
     path('run_script/<str:process_id>/', views.run_python_script, name='run_python_script'),
     path('check_status/<str:process_id>/', views.check_status, name='check_status'),
-    path('presento/<int:pk>/download/', views.download_file, name='download_file'),
+    path('<uuid:pk>/download/', views.download_file, name='download_file'),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
 if settings.DEBUG:

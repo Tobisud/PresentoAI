@@ -141,7 +141,7 @@
                 const percentage = data.process_percentage;  // Assuming this is returned from the server
                 percentageElement.textContent = `${percentage}%`
                 if (data.status === 'completed') {
-                    window.location.href = `/presento/${data.presentation_id}/download/`;
+                    window.location.href = `/${data.presentation_id}/download/`;
                 } else if (data.status === 'pending') {
                     // Optionally update the user or show a spinner
                     setTimeout(checkStatus, 1000); // Check again in 5 seconds

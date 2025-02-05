@@ -35,8 +35,9 @@
     </ul></li>
     <li><a id="toc-Code-formatting-conventions" href="#Code-formatting-conventions">2.2 Code formatting conventions</a>
     <ul class="toc-numbered-mark">
-      <li><a id="toc-Vim-configuration" href="#Vim-configuration">2.2.1 Vim configuration</a></li>
-      <li><a id="toc-Emacs-configuration" href="#Emacs-configuration">2.2.2 Emacs configuration</a></li>
+      <li><a id="toc-Examples" href="#Examples">2.2.1 Examples</a></li>
+      <li><a id="toc-Vim-configuration" href="#Vim-configuration">2.2.2 Vim configuration</a></li>
+      <li><a id="toc-Emacs-configuration" href="#Emacs-configuration">2.2.3 Emacs configuration</a></li>
     </ul></li>
     <li><a id="toc-Comments" href="#Comments">2.3 Comments</a></li>
     <li><a id="toc-Naming-conventions-1" href="#Naming-conventions-1">2.4 Naming conventions</a></li>
@@ -65,10 +66,15 @@
     <li><a id="toc-Visualizing-Test-Coverage" href="#Visualizing-Test-Coverage">8.2 Visualizing Test Coverage</a></li>
     <li><a id="toc-Using-Valgrind" href="#Using-Valgrind">8.3 Using Valgrind</a></li>
   </ul></li>
-  <li><a id="toc-Release-process-1" href="#Release-process-1">9 Release process</a>
+  <li><a id="toc-Maintenance-process" href="#Maintenance-process">9 Maintenance process</a>
   <ul class="toc-numbered-mark">
-    <li><a id="toc-Criteria-for-Point-Releases-1" href="#Criteria-for-Point-Releases-1">9.1 Criteria for Point Releases</a></li>
-    <li><a id="toc-Release-Checklist" href="#Release-Checklist">9.2 Release Checklist</a></li>
+    <li><a id="toc-MAINTAINERS-1" href="#MAINTAINERS-1">9.1 MAINTAINERS</a></li>
+    <li><a id="toc-Becoming-a-maintainer-1" href="#Becoming-a-maintainer-1">9.2 Becoming a maintainer</a></li>
+  </ul></li>
+  <li><a id="toc-Release-process-1" href="#Release-process-1">10 Release process</a>
+  <ul class="toc-numbered-mark">
+    <li><a id="toc-Criteria-for-Point-Releases-1" href="#Criteria-for-Point-Releases-1">10.1 Criteria for Point Releases</a></li>
+    <li><a id="toc-Release-Checklist" href="#Release-Checklist">10.2 Release Checklist</a></li>
   </ul></li>
 </ul>
 </div>
@@ -83,7 +89,8 @@
 <li><a href="#Patch-submission-checklist" accesskey="6">Patch submission checklist</a></li>
 <li><a href="#Patch-review-process" accesskey="7">Patch review process</a></li>
 <li><a href="#Regression-tests-1" accesskey="8">Regression tests</a></li>
-<li><a href="#Release-process-1" accesskey="9">Release process</a></li>
+<li><a href="#Maintenance-process" accesskey="9">Maintenance process</a></li>
+<li><a href="#Release-process-1">Release process</a></li>
 </ul>
 <div class="chapter-level-extent" id="Introduction">
 <h2 class="chapter"><span>1 Introduction<a class="copiable-link" href="#Introduction"> &para;</a></span></h2>
@@ -196,7 +203,7 @@ typically applies to code that needs to be inlined.
 <div class="section-level-extent" id="Code-formatting-conventions">
 <h3 class="section"><span>2.2 Code formatting conventions<a class="copiable-link" href="#Code-formatting-conventions"> &para;</a></span></h3>
 
-<p>There are the following guidelines regarding the indentation in files:
+<p>There are the following guidelines regarding the code style in files:
 </p>
 <ul class="itemize mark-bullet">
 <li>Indent size is 4.
@@ -213,11 +220,107 @@ and only if this improves readability.
 <p>The presentation is one inspired by &rsquo;indent -i4 -kr -nut&rsquo;.
 </p>
 <ul class="mini-toc">
-<li><a href="#Vim-configuration" accesskey="1">Vim configuration</a></li>
-<li><a href="#Emacs-configuration" accesskey="2">Emacs configuration</a></li>
+<li><a href="#Examples" accesskey="1">Examples</a></li>
+<li><a href="#Vim-configuration" accesskey="2">Vim configuration</a></li>
+<li><a href="#Emacs-configuration" accesskey="3">Emacs configuration</a></li>
 </ul>
+<div class="subsection-level-extent" id="Examples">
+<h4 class="subsection"><span>2.2.1 Examples<a class="copiable-link" href="#Examples"> &para;</a></span></h4>
+<p>Some notable examples to illustrate common code style in FFmpeg:
+</p>
+<ul class="itemize mark-bullet">
+<li>Space around assignments and after
+<code class="code">if</code>/<code class="code">do</code>/<code class="code">while</code>/<code class="code">for</code> keywords:
+
+<div class="example user-c user-good">
+<pre class="example-preformatted">// Good
+if (condition)
+    av_foo();
+</pre></div>
+
+<div class="example user-c user-good">
+<pre class="example-preformatted">// Good
+for (size_t i = 0; i &lt; len; i++)
+    av_bar(i);
+</pre></div>
+
+<div class="example user-c user-good">
+<pre class="example-preformatted">// Good
+size_t size = 0;
+</pre></div>
+
+<p>However no spaces between the parentheses and condition, unless it helps
+readability of complex conditions, so the following should not be done:
+</p>
+<div class="example user-c user-bad">
+<pre class="example-preformatted">// Bad style
+if ( condition )
+    av_foo();
+</pre></div>
+
+</li><li>No unnecessary parentheses, unless it helps readability:
+
+<div class="example user-c user-good">
+<pre class="example-preformatted">// Good
+int fields = ilace ? 2 : 1;
+</pre></div>
+
+</li><li>No braces around single-line blocks:
+
+<div class="example user-c user-good">
+<pre class="example-preformatted">// Good
+if (bits_pixel == 24)
+    avctx-&gt;pix_fmt = AV_PIX_FMT_BGR24;
+else if (bits_pixel == 8)
+    avctx-&gt;pix_fmt = AV_PIX_FMT_GRAY8;
+else {
+    av_log(avctx, AV_LOG_ERROR, &quot;Invalid pixel format.\n&quot;);
+    return AVERROR_INVALIDDATA;
+}
+</pre></div>
+
+</li><li>Avoid assignments in conditions where it makes sense:
+
+<div class="example user-c user-good">
+<pre class="example-preformatted">// Good
+video_enc-&gt;chroma_intra_matrix = av_mallocz(sizeof(*video_enc-&gt;chroma_intra_matrix) * 64)
+if (!video_enc-&gt;chroma_intra_matrix)
+    return AVERROR(ENOMEM);
+</pre></div>
+
+<div class="example user-c user-bad">
+<pre class="example-preformatted">// Bad style
+if (!(video_enc-&gt;chroma_intra_matrix = av_mallocz(sizeof(*video_enc-&gt;chroma_intra_matrix) * 64)))
+    return AVERROR(ENOMEM);
+</pre></div>
+
+<div class="example user-c user-good">
+<pre class="example-preformatted">// Ok
+while ((entry = av_dict_iterate(options, entry)))
+    av_log(ctx, AV_LOG_INFO, &quot;Item '%s': '%s'\n&quot;, entry-&gt;key, entry-&gt;value);
+</pre></div>
+
+</li><li>When declaring a pointer variable, the <code class="code">*</code> goes with the variable not the type:
+
+<div class="example user-c user-good">
+<pre class="example-preformatted">// Good
+AVStream *stream;
+</pre></div>
+
+<div class="example user-c user-bad">
+<pre class="example-preformatted">// Bad style
+AVStream* stream;
+</pre></div>
+
+</li></ul>
+
+<p>If you work on a file that does not follow these guidelines consistently,
+change the parts that you are editing to follow these guidelines but do
+not make unrelated changes in the file to make it conform to these.
+</p>
+</div>
 <div class="subsection-level-extent" id="Vim-configuration">
-<h4 class="subsection"><span>2.2.1 Vim configuration<a class="copiable-link" href="#Vim-configuration"> &para;</a></span></h4>
+<h4 class="subsection"><span>2.2.2 Vim configuration<a class="copiable-link" href="#Vim-configuration"> &para;</a></span></h4>
 <p>In order to configure Vim to follow FFmpeg formatting conventions, paste
 the following snippet into your <samp class="file">.vimrc</samp>:
 </p><div class="example">
@@ -238,7 +341,7 @@ autocmd InsertEnter * match ForbiddenWhitespace /\t\|\s\+\%#\@&lt;!$/
 
 </div>
 <div class="subsection-level-extent" id="Emacs-configuration">
-<h4 class="subsection"><span>2.2.2 Emacs configuration<a class="copiable-link" href="#Emacs-configuration"> &para;</a></span></h4>
+<h4 class="subsection"><span>2.2.3 Emacs configuration<a class="copiable-link" href="#Emacs-configuration"> &para;</a></span></h4>
 <p>For Emacs, add these roughly equivalent lines to your <samp class="file">.emacs.d/init.el</samp>:
 </p><div class="example lisp">
 <pre class="lisp-preformatted">(c-add-style &quot;ffmpeg&quot;
@@ -1008,10 +1111,36 @@ FATE under the supervision of either the <strong class="strong">memcheck</strong
 <code class="code">--target-exec='valgrind &lt;your_custom_valgrind_options&gt;</code> option in
 your configure line instead.
 </p>
+<a class="anchor" id="Maintenance"></a></div>
+</div>
+<div class="chapter-level-extent" id="Maintenance-process">
+<h2 class="chapter"><span>9 Maintenance process<a class="copiable-link" href="#Maintenance-process"> &para;</a></span></h2>
+
+<a class="anchor" id="MAINTAINERS"></a><ul class="mini-toc">
+<li><a href="#MAINTAINERS-1" accesskey="1">MAINTAINERS</a></li>
+<li><a href="#Becoming-a-maintainer-1" accesskey="2">Becoming a maintainer</a></li>
+</ul>
+<div class="section-level-extent" id="MAINTAINERS-1">
+<h3 class="section"><span>9.1 MAINTAINERS<a class="copiable-link" href="#MAINTAINERS-1"> &para;</a></span></h3>
+
+<p>The developers maintaining each part of the codebase are listed in <samp class="file">MAINTAINERS</samp>.
+Being listed in <samp class="file">MAINTAINERS</samp>, gives one the right to have git write access to
+the specific repository.
+</p>
+<a class="anchor" id="Becoming-a-maintainer"></a></div>
+<div class="section-level-extent" id="Becoming-a-maintainer-1">
+<h3 class="section"><span>9.2 Becoming a maintainer<a class="copiable-link" href="#Becoming-a-maintainer-1"> &para;</a></span></h3>
+
+<p>People add themselves to <samp class="file">MAINTAINERS</samp> by sending a patch like any other code
+change. These get reviewed by the community like any other patch. It is expected
+that, if someone has an objection to a new maintainer, she is willing to object
+in public with her full name and is willing to take over maintainership for the area.
+</p>
+
 <a class="anchor" id="Release-process"></a></div>
 </div>
 <div class="chapter-level-extent" id="Release-process-1">
-<h2 class="chapter"><span>9 Release process<a class="copiable-link" href="#Release-process-1"> &para;</a></span></h2>
+<h2 class="chapter"><span>10 Release process<a class="copiable-link" href="#Release-process-1"> &para;</a></span></h2>
 
 <p>FFmpeg maintains a set of <strong class="strong">release branches</strong>, which are the
 recommended deliverable for system integrators and distributors (such as
@@ -1045,7 +1174,7 @@ on the <strong class="strong">ffmpeg-devel</strong> mailing list in time to allo
 <li><a href="#Release-Checklist" accesskey="2">Release Checklist</a></li>
 </ul>
 <div class="section-level-extent" id="Criteria-for-Point-Releases-1">
-<h3 class="section"><span>9.1 Criteria for Point Releases<a class="copiable-link" href="#Criteria-for-Point-Releases-1"> &para;</a></span></h3>
+<h3 class="section"><span>10.1 Criteria for Point Releases<a class="copiable-link" href="#Criteria-for-Point-Releases-1"> &para;</a></span></h3>
 
 <p>Changes that match the following criteria are valid candidates for
 inclusion into a point release:
@@ -1067,7 +1196,7 @@ point releases of the same release branch.
 
 </div>
 <div class="section-level-extent" id="Release-Checklist">
-<h3 class="section"><span>9.2 Release Checklist<a class="copiable-link" href="#Release-Checklist"> &para;</a></span></h3>
+<h3 class="section"><span>10.2 Release Checklist<a class="copiable-link" href="#Release-Checklist"> &para;</a></span></h3>
 
 <p>The release process involves the following steps:
 </p>

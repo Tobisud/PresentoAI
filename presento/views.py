@@ -90,7 +90,7 @@ def check_status(request, process_id):
         response_data = {
             'status': presentation.status,
             'process_percentage': presentation.process_percentage,  # Ensure percentage is returned
-            'presentation_id': presentation.id if presentation.status == 'completed' else None
+            'presentation_id': presentation.process_id if presentation.status == 'completed' else None
         }
         return JsonResponse(response_data)
     except Presento.DoesNotExist:

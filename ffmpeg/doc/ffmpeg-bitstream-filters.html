@@ -632,9 +632,21 @@ format with <code class="command">ffmpeg</code>, you can use the command:
 <div class="section-level-extent" id="h264_005fredundant_005fpps">
 <h3 class="section"><span>2.14 h264_redundant_pps<a class="copiable-link" href="#h264_005fredundant_005fpps"> &para;</a></span></h3>
 
-<p>This applies a specific fixup to some Blu-ray streams which contain
-redundant PPSs modifying irrelevant parameters of the stream which
-confuse other transformations which require correct extradata.
+<p>This applies a specific fixup to some Blu-ray BDMV H264 streams
+which contain redundant PPSs. The PPSs modify irrelevant parameters
+of the stream, confusing other transformations which require
+the correct extradata.
+</p>
+<p>The encoder used on these impacted streams adds extra PPSs throughout
+the stream, varying the initial QP and whether weighted prediction
+was enabled. This causes issues after copying the stream into
+a global header container, as the starting PPS is not suitable
+for the rest of the stream. One side effect, for example,
+is seeking will return garbled output until a new PPS appears.
+</p>
+<p>This BSF removes the extra PPSs and rewrites the slice headers
+such that the stream uses a single leading PPS in the global header,
+which resolves the issue.
 </p>
 </div>
 <div class="section-level-extent" id="hevc_005fmetadata">
